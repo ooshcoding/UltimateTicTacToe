@@ -19,7 +19,7 @@ public class Main {
             int bc = board.getNextBoardCol();
 
             if (br == -1 || bc == -1) {
-                System.out.println("You MUST start in the middle board");
+                System.out.println("You can start ANYWHERE on the board.");
             } else {
                 System.out.println("You must play in board (" + br + ", " + bc + ")");
             }
@@ -27,15 +27,16 @@ public class Main {
             if (currentPlayer == 'X') {
                 boolean valid = false;
                 while (!valid) {
-                    System.out.print("Enter your move (row col) inside the selected small board: ");
-                    int r = sc.nextInt();
-                    int c = sc.nextInt();
                     if (br == -1 || bc == -1) {
                         System.out.print("Enter which board to play in (boardRow boardCol): ");
                         br = sc.nextInt();
                         bc = sc.nextInt();
                     }
 
+                    System.out.print("Enter your move (row col) inside the selected small board: ");
+                    int r = sc.nextInt();
+                    int c = sc.nextInt();
+                    
                     if (board.makeMove(br, bc, r, c, currentPlayer)) {
                         valid = true;
                     } else {
@@ -58,4 +59,7 @@ public class Main {
 }
 
 //what still needs to be done:
-/*  */
+/* 
+ * - make it so that the interface shows a huge x over the winning board
+ * - make it so that once a board is won, it cannot be played anymore
+ */
