@@ -39,7 +39,8 @@ public class Main {
                     
                     if (board.makeMove(br, bc, r, c, currentPlayer)) {
                         valid = true;
-                    } else {
+                    }
+                    if(!board.makeMove(br, bc, r, c, currentPlayer)) {
                         System.out.println("Invalid move. Try again.");
                     }
                 }
@@ -62,4 +63,7 @@ public class Main {
 /* 
  * - make it so that the interface shows a huge x over the winning board
  * - make it so that once a board is won, it cannot be played anymore
+ * - problem: whenever we are in a game, and I do an invalid move to a square that is out of bounds,
+ *   the other person can play still which shouldn't happen
+ * - 
  */
