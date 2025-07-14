@@ -10,8 +10,18 @@ public class Main {
         BigBoard board = new BigBoard();
         char currentPlayer = 'X';
         Random rand = new Random();
+        SmallBoard sb1 = board.getBoards()[0][0];
 
-        while (!board.isGameOver()) {
+           
+        char[][] newGrid = {{' ', ' ', 'O'}, {' ', 'X', ' '}, {'O', ' ', ' '}};
+        sb1.setGrid(newGrid);
+
+        MiniMax minimax = new MiniMax();
+
+        float [][]ratio = minimax.eval(board);
+        
+        System.out.println(ratio[0][0]);
+        /*while (!board.isGameOver()) {
             System.out.println("Current Player: " + currentPlayer);
             board.display();
 
@@ -55,9 +65,10 @@ public class Main {
         }
 
         board.display();
-        System.out.println("Game over! Winner: " + board.getWinner());
+        System.out.println("Game over! Winner: " + board.getWinner());*/
     }
-}
+    } 
+
 
 //what still needs to be done:
 /* 

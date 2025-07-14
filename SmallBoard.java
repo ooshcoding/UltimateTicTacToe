@@ -48,4 +48,11 @@ public class SmallBoard {
     public char getWinner(){
         return winner;
     }
+    public char[][] getGrid(){
+        return grid;
+    }
+
+    public void setGrid(char[][] newGrid){
+        grid = newGrid;
+    }
 }

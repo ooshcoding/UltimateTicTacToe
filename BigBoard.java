@@ -81,6 +81,9 @@ public class BigBoard {
         return nextBoardRow;
     }
 
+    public SmallBoard[][] getBoards() {
+        return boards;
+    }
     public int getNextBoardCol() {
         return nextBoardCol;
     }
