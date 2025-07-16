@@ -13,13 +13,13 @@ public class Main {
         SmallBoard sb1 = board.getBoards()[0][0];
 
            
-        char[][] newGrid = {{' ', ' ', 'O'}, {' ', 'X', ' '}, {'O', ' ', ' '}};
+        char[][] newGrid = {{' ', 'O', ' '}, {'X', 'X', ' '}, {' ', 'X', ' '}};
         sb1.setGrid(newGrid);
 
         MiniMax minimax = new MiniMax();
 
         float [][]ratio = minimax.eval(board);
-        
+
         System.out.println(ratio[0][0]);
         /*while (!board.isGameOver()) {
             System.out.println("Current Player: " + currentPlayer);
