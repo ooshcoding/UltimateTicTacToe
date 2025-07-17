@@ -18,7 +18,14 @@ public class SmallBoard {
         }
         return false;
     }
-
+    public boolean isEmpty(){
+        for (char[] row : grid) {
+            for (char cell : row) {
+                if (cell != ' ') return false;
+            }
+        }
+        return true;
+    }
     public void checkWinner() {
         for (int i = 0; i < 3; i++) {
             if (grid[i][0] != ' ' && grid[i][0] == grid[i][1] && grid[i][1] == grid[i][2])

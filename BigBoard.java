@@ -87,7 +87,7 @@ public class BigBoard {
     public int getNextBoardCol() {
         return nextBoardCol;
     }
-
+    
     public ArrayList<int[]> getAvailableMoves() {
         ArrayList<int[]> moves = new ArrayList<>();
         for (int br = 0; br < 3; br++)
@@ -100,4 +100,22 @@ public class BigBoard {
                                 moves.add(new int[]{br, bc, r, c});
         return moves;
     }
+
+    public ArrayList<int[]> legalMoves(){
+        ArrayList<int[]> legalMoves = new ArrayList<>();
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++){
+                for (int k = 0; k < 3; k++){
+                    for (int l = 0; l < 3; l++){
+                        if (boards[i][j].getCell(k, l) == ' ') {
+                            int[] move = new int[4];
+                            move = new int[]{i, j, k, l};
+                            legalMoves.add(move);
+                        }
+                    }
+                }
+            }
+        }
+        return legalMoves;
+    } 
 }
