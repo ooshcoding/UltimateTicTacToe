@@ -10,18 +10,13 @@ public class Main {
         BigBoard board = new BigBoard();
         char currentPlayer = 'X';
         Random rand = new Random();
-        SmallBoard sb1 = board.getBoards()[0][0];
 
-           
-        char[][] newGrid = {{' ', 'O', ' '}, {'X', 'X', ' '}, {' ', 'X', ' '}};
-        sb1.setGrid(newGrid);
+        
 
-        MiniMax minimax = new MiniMax();
-
-        float [][]ratio = minimax.eval(board);
-
-        System.out.println(ratio[0][0]);
-        /*while (!board.isGameOver()) {
+       MiniMax minimax = new MiniMax();
+        
+        //System.out.println(minimax.miniMax(board, 5, 0, false, -99999, 99999));
+        while (!board.isGameOver()) {
             System.out.println("Current Player: " + currentPlayer);
             board.display();
 
@@ -55,8 +50,8 @@ public class Main {
                     }
                 }
             } else {
-                List<int[]> moves = board.getAvailableMoves();
-                int[] move = moves.get(rand.nextInt(moves.size()));
+                int[] move = minimax.findBestMove(board, 7);
+
                 board.makeMove(move[0], move[1], move[2], move[3], currentPlayer);
                 System.out.println("Computer played in board (" + move[0] + ", " + move[1] + ") at (" + move[2] + ", " + move[3] + ")");
             }
@@ -65,7 +60,7 @@ public class Main {
         }
 
         board.display();
-        System.out.println("Game over! Winner: " + board.getWinner());*/
+        System.out.println("Game over! Winner: " + board.getWinner());
     }
     } 
 

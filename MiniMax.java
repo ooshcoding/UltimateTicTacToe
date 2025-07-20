@@ -1,19 +1,16 @@
 import java.util.ArrayList;
 import java.util.Random;
-import com.google.common.primitives.Floats;
 
 
 public class MiniMax {
     private int x_wins;
     private int o_wins;
-    private int depth;
     private float[][] ratio = new float[3][3];
-
+    private int [] bestMove = new int[4];
 
     public MiniMax(){
         this.x_wins = 0;
         this.o_wins = 0;
-        this.depth = 5; //looking five steps (branches) ahead in the tree
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
                 ratio[i][j] = 0;
@@ -21,6 +18,9 @@ public class MiniMax {
         }
     }
 
+    public int[] getBestMove() {
+        return bestMove;
+    }
     public float[][] eval(BigBoard board){
         
         SmallBoard [][] boards = board.getBoards();
@@ -141,27 +141,26 @@ public class MiniMax {
                 }
                 if (x_wins == 0){
                     if (o_wins == 0){
-                        ratio[i][j] = (float)-100;
+                        ratio[i][j] = (float) -30;
                     }
                     else{
-                        ratio[i][j] = (float) 100;
+                        ratio[i][j] = (float) 30;
                     }
                 }
                 else {
-                    ratio[i][j] = (float) o_wins / x_wins;
-                    System.out.println(o_wins + " " + x_wins);
+                    ratio[i][j] = (float) o_wins - x_wins;
                 }
                 if (sb.isEmpty()){
                     ratio[i][j] = (float) 0; 
                     break; //neutral position, but change to match halfway of top and bottom x ratio
                 }
                 if (sb.getWinner() == 'X'){
-                    ratio[i][j] = (float) 100;
+                    ratio[i][j] = (float) 30;
                 } else if (sb.getWinner() == 'O'){
-                    ratio[i][j] = (float) -100;
+                    ratio[i][j] = (float) -30;
                 }
                 else if (sb.isPlayable() == false && sb.getWinner() == ' '){
-                    ratio[i][j] = (float) 0; //if the board is full and no winner, neutral position
+                    ratio[i][j] = (float) -15; //if the board is full and no winner, neutral position
                 }
 
                 o_wins = 0;
@@ -173,18 +172,35 @@ public class MiniMax {
  }
         
     public float finalRatio(float[][] ratios){
+
+        
+        
         float finalRatio = -999;
+        float finalRatio2 = -999;
         float ratio1 = Math.max(finalRatio, rowSum(ratios, 0));
         float ratio2 = Math.max(rowSum(ratios, 1), rowSum(ratios, 2));
         float ratio3 = Math.max(colSum(ratios, 0), colSum(ratios, 1));
         float ratio4 = Math.max(colSum(ratios, 2), diagSum1(ratios));
         float ratio5 = Math.max(diagSum2(ratios), ratio1);
-        return Math.max(ratio5, Math.max(ratio2, Math.max(ratio3, ratio4)));
-    }
 
+        float ratio6 = Math.max(finalRatio2, rowSum2(ratios, 0));
+        float ratio7 = Math.max(rowSum2(ratios, 1), rowSum2(ratios, 2));
+        float ratio8 = Math.max(colSum2(ratios, 0), colSum2(ratios, 1));
+        float ratio9 = Math.max(colSum2(ratios, 2), diagSumA(ratios));
+        float ratio10 = Math.max(diagSumB(ratios), ratio6);
+
+        return(Math.max(ratio5, Math.max(ratio2, Math.max(ratio3, ratio4))/(Math.max(ratio10, Math.max(ratio7, Math.max(ratio8, ratio9))))));
+        
+        
+    }
+// player X and player O evals
     public float diagSum1(float[][]ratios){return ratios[0][0] + ratios[1][1] + ratios[2][2];}
+    public float diagSumA(float[][]ratios){return 1/ratios[0][0] + 1/ratios[1][1] + 1/ratios[2][2];} 
+    public float diagSumB(float[][]ratios){return 1/ratios[0][2] + 1/ratios[1][1] + 1/ratios[2][0];}
     public float diagSum2(float[][]ratios){return ratios[0][2] + ratios[1][1] + ratios[2][0];}
     public float rowSum(float[][]ratios, int row){return ratios[row][0] + ratios[row][1] + ratios[row][2];}
+    public float rowSum2(float[][]ratios, int row){return 1/ratios[row][0] + 1/ratios[row][1] + 1/ratios[row][2];}
+    public float colSum2(float[][]ratios, int col){return 1/ratios[0][col] + 1/ratios[1][col] + 1/ratios[2][col];}
     public float colSum(float[][]ratios, int col){return ratios[0][col] + ratios[1][col] + ratios[2][col];}
 
     public char colWin(char val, int col, char[][] grid){
@@ -227,64 +243,106 @@ public class MiniMax {
     }
 
     
-    public int[] miniMax(BigBoard board, char player, boolean isMaximizing){
-        ArrayList<int[]> legalMoves = board.legalMoves();
-        int [] bestMove = new int[4];
+    public float miniMax(BigBoard board, int depth, int player, boolean isMaximizing, float alpha, float beta){
+        ArrayList<int[]> legalMoves = board.getAvailableMoves();
+        board.checkOverallWinner();
+        if (depth == 0 || board.getWinner() != ' ' || legalMoves.size() == 0) {
+            return finalRatio(eval(board)); //if depth is 0, return the ratio of the board
+        }
         if (isMaximizing){
-            float highestVal = -999;
+            float highestVal = -99999999;
             for (int[] move : legalMoves) {
-                SmallBoard sb = board.getBoards()[move[0]][move[1]];
-                char[][] grid = sb.getGrid();
-                grid[move[2]][move[3]] = player; 
-                highestVal = Math.max(highestVal, finalRatio(eval(board))); //max to maximize the value score,
-                int [] bestMove1 = {move[0], move[1], move[2], move[3]};
-                bestMove = bestMove1;
-                grid[move[2]][move[3]] = ' '; // Reset the move
+                BigBoard boardCopy = deepCopy(board); 
+                if (player % 2 == 0){boardCopy.makeMove(move[0], move[1], move[2], move[3], 'X');} //if player is even, X plays
+                else{boardCopy.makeMove(move[0], move[1], move[2], move[3], 'O');}
+                
+                float value = miniMax(boardCopy, depth - 1, player+1, false, alpha, beta);
+                highestVal = Math.max(highestVal, value); //max to maximize the value score,
+                alpha = Math.max(alpha, value);
+                if (beta <= alpha) {
+                    break; // Beta is the lowest other branch move, the non maximizing always chooses lowest
+
+                }
             }
-            return bestMove;
+            return highestVal;
         }
         else{
-            float lowestVal = 999;
+            float lowestVal = 99999999;
             for (int[] move : legalMoves) {
-                SmallBoard sb = board.getBoards()[move[0]][move[1]];
-                char[][] grid = sb.getGrid();
-                grid[move[2]][move[3]] = player; 
-                lowestVal = Math.min(lowestVal, finalRatio(eval(board))); //min to minimize the value score,
-                int [] bestMove1 = {move[0], move[1], move[2], move[3]};
-                bestMove = bestMove1;
-                grid[move[2]][move[3]] = ' '; // Reset the move
+                BigBoard boardCopy = deepCopy(board); 
+
+                if (player % 2 == 0){boardCopy.makeMove(move[0], move[1], move[2], move[3], 'X');} //if player is even, X plays
+                else{boardCopy.makeMove(move[0], move[1], move[2], move[3], 'O');}
+                
+
+                float value = miniMax(boardCopy, depth - 1, player+1, true, alpha, beta);
+
+                lowestVal = Math.min(lowestVal, value);
+                beta = Math.min(beta, value);  
+                if (beta <= alpha) {
+                    break; 
+                }
+                //min to minimize the value score,
+                //int [] bestMove1 = {move[0], move[1], move[2], move[3]};
+                //bestMove = bestMove1;
+                
             }
-            return bestMove;
+            return lowestVal;
         }
         
+
+     
+
+
     }
+
+
+    public int[] findBestMove(BigBoard board, int depth) {
+        float bestVal = -99999999;
+        int[] bestMoveFound = null;
+        ArrayList<int[]> legalMoves = board.getAvailableMoves();
+    
+        for (int[] move : legalMoves) {
+            // Make a move on a COPY of the board
+            BigBoard boardCopy = deepCopy(board); // Assuming you have a makeMove function
     
 
-    public int miniMax(BigBoard board, boolean isMaximizing){
+            float moveValue = miniMax(boardCopy, depth, 0, false, -99999, 99999);    
+            if (moveValue > bestVal) {
+                bestVal = moveValue;
+                bestMoveFound = move;
+            }
+        }
+        this.bestMove = bestMoveFound;
+        return bestMoveFound;
+    }
+
+       // In your SmallBoard.java file
+    public SmallBoard deepCopy(SmallBoard sb) {
+        SmallBoard newBoard = new SmallBoard(); // Assuming a default constructor
+        char[][] oldGrid = sb.getGrid();
+        char[][] newGrid = newBoard.getGrid();
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                newGrid[i][j] = oldGrid[i][j];
+            }
+        }
+
+    
+        return newBoard;
+    }
+
+    public BigBoard deepCopy(BigBoard board) {
+        BigBoard newBigBoard = new BigBoard(); // Assuming a default constructor
         
-
-        ArrayList<int[]> legalMoves = board.legalMoves();
-        if (legalMoves.isEmpty()) {
-            return 0; // Draw
-        }
-
-        int bestValue;
-        if (isMaximizing) {
-            bestValue = Integer.MIN_VALUE;
-            for (int[] move : legalMoves) {
-                board.makeMove(move[0], move[1], move[2], move[3], 'X');
-                bestValue = Math.max(bestValue, miniMax(board, false));
-                board.undoMove(move[0], move[1], move[2], move[3]); // Undo the move
-            }
-        } else {
-            bestValue = Integer.MAX_VALUE;
-            for (int[] move : legalMoves) {
-                board.makeMove(move[0], move[1], move[2], move[3], 'O');
-                bestValue = Math.min(bestValue, miniMax(board, true));
-                board.undoMove(move[0], move[1], move[2], move[3]); // Undo the move
+        // For each small board in the original, create a deep copy for the new one
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                newBigBoard.getBoards()[i][j] = deepCopy(board.getBoards()[i][j]);
             }
         }
-        return bestValue;
+        return newBigBoard;
     }
 
 }
