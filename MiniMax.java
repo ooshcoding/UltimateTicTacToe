@@ -246,8 +246,9 @@ public class MiniMax {
         ArrayList<int[]> legalMoves = board.getAvailableMoves();
         board.checkOverallWinner();
         if (depth == 0 || board.getWinner() != ' ' || legalMoves.size() == 0) {
-            return finalRatio(eval(board)); //if depth is 0, return the ratio of the board
-        }
+            return finalRatio(eval(board)); //if depth is 0, return the evaluation of the board
+        } //reset highestVal for next call
+
         if (isMaximizing){
             float temp ;
             for (int[] move : legalMoves) {
@@ -257,8 +258,8 @@ public class MiniMax {
                 //System.out.println("Maximizing move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
                 float value = miniMax(boardCopy, depth - 1, false);//, alpha, beta);
                 //highestVal = Math.max(highestVal, value); 
-                //System.out.println("Move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
-                //System.out.println("value: " + value);
+                System.out.println("Move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
+                System.out.println("value: " + value);
                 if (highestVal < value){
                     bestMove = move;
                     highestVal = value;

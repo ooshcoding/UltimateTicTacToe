@@ -50,7 +50,7 @@ public class Main {
                     }
                 }
             } else {
-                int[] move = minimax.findBestMove(board, 7);
+                int[] move = minimax.findBestMove(board, 2);
 
                 board.makeMove(move[0], move[1], move[2], move[3], currentPlayer);
                 System.out.println("Computer played in board (" + move[0] + ", " + move[1] + ") at (" + move[2] + ", " + move[3] + ")");
