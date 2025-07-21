@@ -274,6 +274,7 @@ public class MiniMax {
 
             }
             temp = highestVal;
+            highestVal = -99999999;
             return temp;
         }
         else{
