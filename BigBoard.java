@@ -87,7 +87,7 @@ public class BigBoard {
     public int getNextBoardCol() {
         return nextBoardCol;
     }
-
+    
     public ArrayList<int[]> getAvailableMoves() {
         ArrayList<int[]> moves = new ArrayList<>();
         for (int br = 0; br < 3; br++)
@@ -100,4 +100,6 @@ public class BigBoard {
                                 moves.add(new int[]{br, bc, r, c});
         return moves;
     }
-}
+
+    
+} 
