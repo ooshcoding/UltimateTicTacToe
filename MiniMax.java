@@ -26,6 +26,19 @@ public class MiniMax {
                 SmallBoard sb = boards[i][j];
                 char [][] grid = sb.getGrid();
                 //col1
+                if (sb.isEmpty()){
+                    //Random rand = new Random();
+                    ratio[i][j] = 0;//rand.nextFloat(); 
+                     //neutral position, but change to match halfway of top and bottom x ratio
+                }
+                else if (sb.getWinner() == 'X'){ //if board is already WON
+                    ratio[i][j] = (float) -4;
+                } else if (sb.getWinner() == 'O'){
+                    ratio[i][j] = (float) 4;
+                }
+                else if (sb.isPlayable() == false && sb.getWinner() == ' '){ // board is tied.
+                    ratio[i][j] = (float) 0; //if the board is full and no winner, neutral position
+                }
 
                 for (int c = 0; c < 3; c++){ //c is column number
                     if (grid[0][c] != ' '){ //grid row c, col 0
@@ -135,21 +148,10 @@ public class MiniMax {
                         
                     }
                 }
-                if (sb.isEmpty()){
-                    ratio[i][j] = (float) 0; 
-                    break; //neutral position, but change to match halfway of top and bottom x ratio
-                }
-                else if (sb.getWinner() == 'X'){ //if board is already WON
-                    ratio[i][j] = (float) -4;
-                } else if (sb.getWinner() == 'O'){
-                    ratio[i][j] = (float) 4;
-                }
-                else if (sb.isPlayable() == false && sb.getWinner() == ' '){ // board is tied.
-                    ratio[i][j] = (float) 0; //if the board is full and no winner, neutral position
-                }
+                
 
                 
-                else {
+                if (!sb.isEmpty()){
                     ratio[i][j] = (float) o_wins - x_wins;
                 }
                 
@@ -170,17 +172,28 @@ public class MiniMax {
         float finalRatio = -999;
         float finalRatio2 = -999;
         float ratio1 = Math.max(finalRatio, rowSum(ratios, 0));
+        System.out.println("Ratio1: " + ratio1);
         float ratio2 = Math.max(rowSum(ratios, 1), rowSum(ratios, 2));
+        //System.out.println("Ratio2: " + ratio2);
         float ratio3 = Math.max(colSum(ratios, 0), colSum(ratios, 1));
+        //System.out.println("Ratio3: " + ratio3);
         float ratio4 = Math.max(colSum(ratios, 2), diagSum1(ratios));
+        //System.out.println("Ratio4: " + ratio4);
         float ratio5 = Math.max(diagSum2(ratios), ratio1);
+        //System.out.println("Ratio5: " + ratio5);
 
         float ratio6 = Math.max(finalRatio2, rowSum2(ratios, 0));
+        System.out.println(rowSum2(ratios, 0));
+        System.out.println("Ratio6: " + ratio6);
         float ratio7 = Math.max(rowSum2(ratios, 1), rowSum2(ratios, 2));
+        //System.out.println("Ratio7: " + ratio7);
         float ratio8 = Math.max(colSum2(ratios, 0), colSum2(ratios, 1));
+        //System.out.println("Ratio8: " + ratio8);
         float ratio9 = Math.max(colSum2(ratios, 2), diagSumA(ratios));
+        //System.out.println("Ratio9: " + ratio9);
         float ratio10 = Math.max(diagSumB(ratios), ratio6);
-
+        //System.out.println("Ratio10: " + ratio10);
+        System.out.println(Math.max(ratio5, Math.max(ratio2, Math.max(ratio3, ratio4)) )+ "-" + (Math.max(ratio10, Math.max(ratio7, Math.max(ratio8, ratio9)))));
         return(Math.max(ratio5, Math.max(ratio2, Math.max(ratio3, ratio4))-(Math.max(ratio10, Math.max(ratio7, Math.max(ratio8, ratio9))))));
         
         
@@ -190,8 +203,8 @@ public class MiniMax {
     public float diagSumA(float[][]ratios){return -ratios[0][0] - ratios[1][1] - ratios[2][2];} 
     public float diagSumB(float[][]ratios){return -ratios[0][2] - ratios[1][1] - ratios[2][0];}
     public float diagSum2(float[][]ratios){return ratios[0][2] + ratios[1][1] + ratios[2][0];}
-    public float rowSum(float[][]ratios, int row){return ratios[row][0] + ratios[row][1] + ratios[row][2];}
-    public float rowSum2(float[][]ratios, int row){return -ratios[row][0] - ratios[row][1] - ratios[row][2];}
+    public float rowSum(float[][]ratios, int row){System.out.println(ratios[row][0] + "+" + ratios[row][1] + "+" + ratios[row][2]);return ratios[row][0] + ratios[row][1] + ratios[row][2];}
+    public float rowSum2(float[][]ratios, int row){System.out.println("-" + ratios[row][0] + "-" + ratios[row][1] + "-" + ratios[row][2]);return -ratios[row][0] - ratios[row][1] - ratios[row][2];}
     public float colSum2(float[][]ratios, int col){return -ratios[0][col] - ratios[1][col] - ratios[2][col];}
     public float colSum(float[][]ratios, int col){return ratios[0][col] + ratios[1][col] + ratios[2][col];}
 
@@ -236,11 +249,23 @@ public class MiniMax {
         if (isMaximizing){
             float highestVal = -99999999;
             for (int[] move : legalMoves) {
+                int[] bestMove;
+
                 BigBoard boardCopy = deepCopy(board); 
                 boardCopy.makeMove(move[0], move[1], move[2], move[3], 'O');
-                
+                //System.out.println("Maximizing move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
                 float value = miniMax(boardCopy, depth - 1, false);//, alpha, beta);
-                highestVal = Math.max(highestVal, value); //max to maximize the value score,
+                //highestVal = Math.max(highestVal, value); 
+                System.out.println("Move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
+                System.out.println("value: " + value);
+                if (highestVal < value){
+                    bestMove = move;
+                    highestVal = value;
+                    //System.out.println("Best move found: " + bestMove[0] + ", " + bestMove[1] + ", " + bestMove[2] + ", " + bestMove[3]);
+                    //System.out.println("Highest value: " + highestVal);
+                    
+                }
+                //max to maximize the value score,
                 //alpha = Math.max(alpha, value);
                 //if (beta <= alpha) {
                   //  break; // Beta is the lowest other branch move, the non maximizing always chooses lowest
@@ -253,9 +278,10 @@ public class MiniMax {
             for (int[] move : legalMoves) {
                 BigBoard boardCopy = deepCopy(board); 
                 boardCopy.makeMove(move[0], move[1], move[2], move[3], 'X'); //if player is not maximizing, X plays
+                //System.out.println("Maximizing move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
 
                 
-
+                
                 float value = miniMax(boardCopy, depth - 1, true);//, alpha, beta);
 
                 lowestVal = Math.min(lowestVal, value);
@@ -285,10 +311,10 @@ public class MiniMax {
     
         for (int[] move : legalMoves) {
             // Make a move on a COPY of the board
-            BigBoard boardCopy = deepCopy(board); // Assuming you have a makeMove function
+            //BigBoard boardCopy = deepCopy(board); // Assuming you have a makeMove function
     
 
-            float moveValue = miniMax(boardCopy, depth, false);//, -99999, 99999);    
+            float moveValue = miniMax(board, depth, true);//, -99999, 99999);    
             if (moveValue > bestVal) {
                 bestVal = moveValue;
                 bestMoveFound = move;
