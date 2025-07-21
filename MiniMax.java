@@ -1,15 +1,17 @@
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Arrays;
 
 
 public class MiniMax {
     private int x_wins;
     private int o_wins;
+     // Original depth for the minimax algorithm
     private float[][] ratio = new float[3][3];
     private int[] bestMove = new int[2]; // Store the best move found
-    private static float highestVal = -99999999; // Initialize to a very low value
+    //private static float highestVal = -99999999; // Initialize to a very low value
     //private static float lowestVal = 9999999;
-    public MiniMax(){
+    public MiniMax() {
         this.x_wins = 0;
         this.o_wins = 0;
         for (int i = 0; i < 3; i++){
@@ -244,7 +246,7 @@ public class MiniMax {
     }
 
     
-    public float miniMax(BigBoard board, int depth, boolean isMaximizing){//, float alpha, float beta){
+    public float miniMax(BigBoard board, int depth, boolean isMaximizing, int originalDepth){//, float alpha, float beta){
         ArrayList<int[]> legalMoves = board.getAvailableMoves();
         board.checkOverallWinner();
         if (depth == 0 || board.getWinner() != ' ' || legalMoves.size() == 0) {
@@ -252,32 +254,36 @@ public class MiniMax {
         } //reset highestVal for next call
 
         if (isMaximizing){
-            float temp ;
+            float highestVal = -Float.MAX_VALUE;
+            float temp;
             for (int[] move : legalMoves) {
 
                 BigBoard boardCopy = deepCopy(board); 
                 boardCopy.makeMove(move[0], move[1], move[2], move[3], 'O');
                 //System.out.println("Maximizing move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
-                float value = miniMax(boardCopy, depth - 1, false);//, alpha, beta);
+                float value = miniMax(boardCopy, depth - 1, false, originalDepth);//, alpha, beta);
                 //highestVal = Math.max(highestVal, value); 
-                System.out.println("Move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
-                System.out.println("value: " + value + " highest value: " + highestVal);
+               // System.out.println("Move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
+               // System.out.println("value: " + value + " highest value: " + highestVal);
 
                 if (highestVal < value){
-                    bestMove = move;
+                    if (depth == originalDepth){
+                        bestMove = move;
+                    }
                     highestVal = value;
-                    System.out.println("Best move found: " + bestMove[0] + ", " + bestMove[1] + ", " + bestMove[2] + ", " + bestMove[3]);
-                    System.out.println("Highest value: " + highestVal);
+                    //System.out.println("Best move found: " + bestMove[0] + ", " + bestMove[1] + ", " + bestMove[2] + ", " + bestMove[3]);
+                    //System.out.println("Highest value: " + highestVal);
                     
                 }
                 //max to maximize the value score,
                 //alpha = Math.max(alpha, value);
                 //if (beta <= alpha) {
                   //  break; // Beta is the lowest other branch move, the non maximizing always chooses lowest
-
+                System.out.println("Trying Move: " + Arrays.toString(move) + " -> Eval: " + value);
             }
+            System.out.println("Returning Highest value: " + highestVal);
             temp = highestVal;
-            highestVal = -99999999;
+            highestVal = -Float.MAX_VALUE;
             return temp;
         }
         else{
@@ -288,7 +294,7 @@ public class MiniMax {
                 //System.out.println("Maximizing move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
 
                 
-                float value = miniMax(boardCopy, depth - 1, true);//, alpha, beta);
+                float value = miniMax(boardCopy, depth - 1, true, originalDepth);//, alpha, beta);
                 if (lowestVal > value){
                     lowestVal = value;//update best move to the current move
                 }
@@ -316,8 +322,8 @@ public class MiniMax {
 
     public int[] findBestMove(BigBoard board, int depth) {
         int[] bestMoveFound = null;
-        miniMax(board, depth, true);
-    
+        miniMax(board, depth, true, depth);
+        System.out.println("Final bestMove " + Arrays.toString(bestMove));
         bestMoveFound = bestMove;
         bestMove = null;//, -99999, 99999);
         //we need to find a way to store best move and acutally have it be best move of all tries.
