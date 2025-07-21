@@ -90,6 +90,7 @@ public class BigBoard {
     
     public ArrayList<int[]> getAvailableMoves() {
         ArrayList<int[]> moves = new ArrayList<>();
+       // System.out.println("nextboardrow: " + nextBoardRow + " nextboardcol: " + nextBoardCol);
         for (int br = 0; br < 3; br++)
             for (int bc = 0; bc < 3; bc++)
                 if ((nextBoardRow == -1 || (br == nextBoardRow && bc == nextBoardCol)) &&
@@ -98,6 +99,7 @@ public class BigBoard {
                         for (int c = 0; c < 3; c++)
                             if (boards[br][bc].getCell(r, c) == ' ')
                                 moves.add(new int[]{br, bc, r, c});
+                                //System.out.println( " " + moves.get(moves.size()-1)[2] + " " + moves.get(moves.size()-1)[3] + " " + moves.get(moves.size()-1)[0] + " " + moves.get(moves.size()-1)[1] );
         return moves;
     }
 

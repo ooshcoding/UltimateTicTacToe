@@ -62,4 +62,16 @@ public class SmallBoard {
     public void setGrid(char[][] newGrid){
         grid = newGrid;
     }
+
+    /*public ArrayList<int[]> getSmallBoardMoves() {
+        ArrayList<int[]> moves = new ArrayList<>();
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                if (grid[r][c] == ' ') {
+                    moves.add(new int[]{r, c});
+                }
+            }
+        }
+        return moves;
+    }*/
 }
