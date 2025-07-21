@@ -1,4 +1,3 @@
-import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -13,7 +12,7 @@ public class Main {
         SmallBoard sb1 = board.getBoards()[0][0];
 
            
-        char[][] newGrid = {{' ', 'O', ' '}, {'X', 'X', ' '}, {' ', 'X', ' '}};
+        char[][] newGrid = {{'X', ' ', ' '}, {' ', ' ', ' '}, {' ', 'O', 'O'}};
         sb1.setGrid(newGrid);
 
         MiniMax minimax = new MiniMax();
