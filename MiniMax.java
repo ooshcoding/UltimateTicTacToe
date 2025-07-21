@@ -34,12 +34,14 @@ public class MiniMax {
                      //neutral position, but change to match halfway of top and bottom x ratio
                 }
                 else if (sb.getWinner() == 'X'){ //if board is already WON
-                    ratio[i][j] = (float) -4;
+                    ratio[i][j] = (float) -6;
+                    //board.display();
                 } else if (sb.getWinner() == 'O'){
-                    ratio[i][j] = (float) 4;
+                    ratio[i][j] = (float) 6;
+                    //board.display();
                 }
                 else if (sb.isPlayable() == false && sb.getWinner() == ' '){ // board is tied.
-                    ratio[i][j] = (float) 0; //if the board is full and no winner, neutral position
+                    ratio[i][j] = (float) -2000; //if the board is full and no winner, neutral position
                 }
 
                 for (int c = 0; c < 3; c++){ //ALL THIS IS FIRST COLUMN
@@ -195,7 +197,7 @@ public class MiniMax {
         //System.out.println("Ratio9: " + ratio9);
         float ratio10 = Math.max(diagSumB(ratios), ratio6);
         //System.out.println("Ratio10: " + ratio10);
-        //System.out.println(Math.max(ratio5, Math.max(ratio2, Math.max(ratio3, ratio4)))+ "-" + (Math.max(ratio10, Math.max(ratio7, Math.max(ratio8, ratio9)))));
+        System.out.println(Math.max(ratio5, Math.max(ratio2, Math.max(ratio3, ratio4)))+ "-" + (Math.max(ratio10, Math.max(ratio7, Math.max(ratio8, ratio9)))));
         return(Math.max(ratio5, Math.max(ratio2, Math.max(ratio3, ratio4)))-(Math.max(ratio10, Math.max(ratio7, Math.max(ratio8, ratio9)))));
         
         
@@ -259,7 +261,8 @@ public class MiniMax {
                 float value = miniMax(boardCopy, depth - 1, false);//, alpha, beta);
                 //highestVal = Math.max(highestVal, value); 
                 System.out.println("Move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
-                System.out.println("value: " + value);
+                System.out.println("value: " + value + " highest value: " + highestVal);
+
                 if (highestVal < value){
                     bestMove = move;
                     highestVal = value;
