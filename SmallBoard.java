@@ -65,6 +65,16 @@ public class SmallBoard {
         grid = newGrid;
     }
 
+    public void setWinner(char newWinner){
+        winner = newWinner;
+    }
+    public boolean isFull() {
+        return full;
+    }
+    
+    public void setFull(boolean full) {
+        this.full = full;
+    }
     public void fill(char player) {
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {

@@ -246,27 +246,26 @@ public class MiniMax {
     }
 
     
-    public float miniMax(BigBoard board, int depth, boolean isMaximizing, int originalDepth){//, float alpha, float beta){
+    public float miniMax(BigBoard board, int depth, boolean isMaximizing, int originalDepth, float highestVal, float lowestVal){//, float alpha, float beta){
         ArrayList<int[]> legalMoves = board.getAvailableMoves();
         board.checkOverallWinner();
-        if (depth == 0 || board.getWinner() != ' ' || legalMoves.size() == 0) {
+        if (depth == 0 || board.getWinner() != ' ' || legalMoves.size() == 0) {//2nd 2 conditions will not happen
             return finalRatio(eval(board)); //if depth is 0, return the evaluation of the board
         } //reset highestVal for next call
 
         if (isMaximizing){
-            float highestVal = -Float.MAX_VALUE;
-            float temp;
             for (int[] move : legalMoves) {
 
                 BigBoard boardCopy = deepCopy(board); 
                 boardCopy.makeMove(move[0], move[1], move[2], move[3], 'O');
                 //System.out.println("Maximizing move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
-                float value = miniMax(boardCopy, depth - 1, false, originalDepth);//, alpha, beta);
+                float value = miniMax(boardCopy, depth - 1, false, originalDepth, highestVal, lowestVal);//, alpha, beta); //make highestval and lowestval compare with every option.
                 //highestVal = Math.max(highestVal, value); 
                // System.out.println("Move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
                // System.out.println("value: " + value + " highest value: " + highestVal);
 
                 if (highestVal < value){
+                     //if we are at the original depth, update the best move
                     bestMove = move;
                     highestVal = value;
                     //System.out.println("Best move found: " + bestMove[0] + ", " + bestMove[1] + ", " + bestMove[2] + ", " + bestMove[3]);
@@ -280,19 +279,16 @@ public class MiniMax {
                 //}//System.out.println("Trying Move: " + Arrays.toString(move) + " -> highest Eval: " + highestVal);
             }
             //System.out.println("Returning Highest value: " + highestVal);
-            temp = highestVal;
-            highestVal = -Float.MAX_VALUE;
-            return temp;
+            return highestVal;
         }
         else{
-            float lowestVal = 99999999;
             for (int[] move : legalMoves) {
                 BigBoard boardCopy = deepCopy(board); 
                 boardCopy.makeMove(move[0], move[1], move[2], move[3], 'X'); //if player is not maximizing, X plays
                 //System.out.println("Maximizing move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
 
                 
-                float value = miniMax(boardCopy, depth - 1, true, originalDepth);//, alpha, beta);
+                float value = miniMax(boardCopy, depth - 1, true, originalDepth, highestVal, lowestVal);//, alpha, beta);
                 if (lowestVal > value){
                     lowestVal = value;//update best move to the current move
                 }
@@ -320,7 +316,7 @@ public class MiniMax {
 
     public int[] findBestMove(BigBoard board, int depth) {
         int[] bestMoveFound = null;
-        miniMax(board, depth, true, depth);//, -Float.MAX_VALUE, Float.MAX_VALUE);
+        miniMax(board, depth, true, depth, -Float.MAX_VALUE, Float.MAX_VALUE);//, -Float.MAX_VALUE, Float.MAX_VALUE);
         System.out.println("Final bestMove " + Arrays.toString(bestMove));
         bestMoveFound = bestMove;
         bestMove = null;//, -99999, 99999);
@@ -334,6 +330,8 @@ public class MiniMax {
         SmallBoard newBoard = new SmallBoard(); // Assuming a default constructor
         char[][] oldGrid = sb.getGrid();
         char[][] newGrid = newBoard.getGrid();
+        newBoard.setWinner(sb.getWinner());
+        newBoard.setFull(sb.isFull());
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -347,6 +345,8 @@ public class MiniMax {
 
     public BigBoard deepCopy(BigBoard board) {
         BigBoard newBigBoard = new BigBoard(); // Assuming a default constructor
+        newBigBoard.setNextBoards(board.getNextBoardRow(), board.getNextBoardCol());
+        newBigBoard.setOverallWinner(board.getWinner());
         
         // For each small board in the original, create a deep copy for the new one
         for (int i = 0; i < 3; i++) {

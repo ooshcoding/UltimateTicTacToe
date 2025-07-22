@@ -12,6 +12,13 @@ public class BigBoard {
                 boards[i][j] = new SmallBoard();
     }
 
+    public void setNextBoards(int nextBoardRow, int nextBoardCol){
+        this.nextBoardRow = nextBoardRow;
+        this.nextBoardCol = nextBoardCol;
+    }
+    public void setOverallWinner(char overallWinner) {
+        this.overallWinner = overallWinner;
+    }
     public boolean makeMove(int br, int bc, int r, int c, char player) {
         if (!isLegalMove(br, bc, r, c)) return false;
         
@@ -31,6 +38,7 @@ public class BigBoard {
 
         return moveMade;
     }
+
 
     public boolean isLegalMove(int br, int bc, int r, int c) {
         if (br < 0 || bc < 0 || r < 0 || c < 0 || br > 2 || bc > 2 || r > 2 || c > 2)
@@ -98,10 +106,10 @@ public class BigBoard {
        // System.out.println("nextboardrow: " + nextBoardRow + " nextboardcol: " + nextBoardCol);
         for (int br = 0; br < 3; br++)
             for (int bc = 0; bc < 3; bc++)
-                if (((nextBoardRow == -1 && nextBoardCol == -1)|| (br == nextBoardRow && bc == nextBoardCol)) &&
+                if (((nextBoardRow == -1 && nextBoardCol == -1) || (br == nextBoardRow && bc == nextBoardCol)) &&
                         boards[br][bc].isPlayable()){
-                        System.out.println("br: " + br + " bc: " + bc);
-                        System.out.println(nextBoardRow + "nextboardrow + " + "nextboardcol " + nextBoardCol);
+                        //System.out.println("br: " + br + " bc: " + bc);
+                        //System.out.println(nextBoardRow + "nextboardrow + " + "nextboardcol " + nextBoardCol);
                     for (int r = 0; r < 3; r++)
                         for (int c = 0; c < 3; c++)
                             if (boards[br][bc].getCell(r, c) == ' ')
