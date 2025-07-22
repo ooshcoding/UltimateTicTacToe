@@ -108,6 +108,7 @@ public class BigBoard {
             for (int bc = 0; bc < 3; bc++)
                 if (((nextBoardRow == -1 && nextBoardCol == -1) || (br == nextBoardRow && bc == nextBoardCol)) &&
                         boards[br][bc].isPlayable()){
+                            
                         //System.out.println("br: " + br + " bc: " + bc);
                         //System.out.println(nextBoardRow + "nextboardrow + " + "nextboardcol " + nextBoardCol);
                     for (int r = 0; r < 3; r++)
