@@ -36,6 +36,11 @@ public class Main {
                         System.out.print("Enter which board to play in (boardRow boardCol): ");
                         br = sc.nextInt();
                         bc = sc.nextInt();
+                        if (board.getBoards()[br][bc].getWinner() != ' ') {
+                            System.out.println("This board is already won. Choose another board.");
+                            br = -1; bc = -1;
+                            continue;
+                        }
                     }
 
                     System.out.print("Enter your move (row col) inside the selected small board: ");
@@ -45,12 +50,12 @@ public class Main {
                     if (board.makeMove(br, bc, r, c, currentPlayer)) {
                         valid = true;
                     }
-                    if(!board.makeMove(br, bc, r, c, currentPlayer)) {
+                    else if(!board.makeMove(br, bc, r, c, currentPlayer)) {
                         System.out.println("Invalid move. Try again.");
                     }
                 }
             } else {
-                int[] move = minimax.findBestMove(board, 5);
+                int[] move = minimax.findBestMove(board, 6);
 
                 board.makeMove(move[0], move[1], move[2], move[3], currentPlayer);
                 System.out.println("Computer played in board (" + move[0] + ", " + move[1] + ") at (" + move[2] + ", " + move[3] + ")");

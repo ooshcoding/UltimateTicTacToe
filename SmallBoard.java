@@ -11,9 +11,10 @@ public class SmallBoard {
     }
 
     public boolean makeMove(int r, int c, char player) {
-        if (grid[r][c] == ' ') {
-            grid[r][c] = player;
-            checkWinner();
+
+        if (grid[r][c] == ' ') { //if cell empty
+            grid[r][c] = player; //set to player
+            checkWinner(); //check winner
             return true;
         }
         return false;
@@ -63,6 +64,7 @@ public class SmallBoard {
     }
 
     public boolean isPlayable() {
+        checkWinner();
         return winner == ' ' && !full;
     }
 
@@ -85,6 +87,23 @@ public class SmallBoard {
     }
 
 
+    public void setWinner(char newWinner){
+        winner = newWinner;
+    }
+    public boolean isFull() {
+        return full;
+    }
+    
+    public void setFull(boolean full) {
+        this.full = full;
+    }
+    public void fill(char player) {
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                grid[r][c] = player;
+            }
+        }
+    }
     /*public ArrayList<int[]> getSmallBoardMoves() {
         ArrayList<int[]> moves = new ArrayList<>();
         for (int r = 0; r < 3; r++) {
