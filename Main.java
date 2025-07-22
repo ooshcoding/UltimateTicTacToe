@@ -10,7 +10,7 @@ public class Main {
         char currentPlayer = 'X';
         Random rand = new Random();
 
-    
+        
 
        MiniMax minimax = new MiniMax();
        
