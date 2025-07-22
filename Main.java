@@ -9,8 +9,11 @@ public class Main {
         BigBoard board = new BigBoard();
         char currentPlayer = 'X';
         Random rand = new Random();
+        SmallBoard sb1 = board.getBoards()[0][0];
 
-        
+           
+        char[][] newGrid = {{' ', 'O', ' '}, {'X', 'X', ' '}, {' ', 'X', ' '}};
+        sb1.setGrid(newGrid);
 
        MiniMax minimax = new MiniMax();
        
