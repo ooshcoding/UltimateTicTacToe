@@ -87,7 +87,14 @@ public class BigBoard {
     public int getNextBoardCol() {
         return nextBoardCol;
     }
+    public void setWinner(char winner) { this.winner = winner; }
+public void setCurrentBoard(int row, int col) {
+    this.currentBoardRow = row;
+    this.currentBoardCol = col;
+}
+
     
+
     public ArrayList<int[]> getAvailableMoves() {
         ArrayList<int[]> moves = new ArrayList<>();
        // System.out.println("nextboardrow: " + nextBoardRow + " nextboardcol: " + nextBoardCol);

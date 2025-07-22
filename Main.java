@@ -1,4 +1,3 @@
-import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -11,8 +10,10 @@ public class Main {
         char currentPlayer = 'X';
         Random rand = new Random();
 
-        
+    
+
        MiniMax minimax = new MiniMax();
+       
         
         //System.out.println(minimax.miniMax(board, 5, 0, false, -99999, 99999));
         while (!board.isGameOver()) {

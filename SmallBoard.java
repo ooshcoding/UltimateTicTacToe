@@ -18,6 +18,24 @@ public class SmallBoard {
         }
         return false;
     }
+    public SmallBoard deepCopy(SmallBoard sb) {
+    SmallBoard newBoard = new SmallBoard();
+    char[][] oldGrid = sb.getGrid();
+    char[][] newGrid = newBoard.getGrid();
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            newGrid[i][j] = oldGrid[i][j];
+        }
+    }
+
+    // Copy winner and playable status
+    newBoard.setWinner(sb.getWinner());
+    newBoard.setPlayable(sb.isPlayable());
+
+    return newBoard;
+}
+
     public boolean isEmpty(){
         for (char[] row : grid) {
             for (char cell : row) {
@@ -58,10 +76,14 @@ public class SmallBoard {
     public char[][] getGrid(){
         return grid;
     }
+    public void setWinner(char winner) { this.winner = winner; }
+    public void setPlayable(boolean playable) { this.playable = playable; }
+
 
     public void setGrid(char[][] newGrid){
         grid = newGrid;
     }
+
 
     /*public ArrayList<int[]> getSmallBoardMoves() {
         ArrayList<int[]> moves = new ArrayList<>();
