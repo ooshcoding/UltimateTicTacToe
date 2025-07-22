@@ -43,7 +43,7 @@ public class MiniMax {
                     //board.display();
                 }
                 else if (sb.isPlayable() == false && sb.getWinner() == ' '){ // board is tied.
-                    ratio[i][j] = (float) -2000; //if the board is full and no winner, neutral position
+                    ratio[i][j] = (float) 0; //if the board is full and no winner, neutral position
                 }
 
                 for (int c = 0; c < 3; c++){ //ALL THIS IS FIRST COLUMN
@@ -157,7 +157,7 @@ public class MiniMax {
                 
 
                 
-                if (!sb.isEmpty()){
+                if (!sb.isEmpty() && sb.getWinner() == ' ' && sb.isPlayable() == true){ //if the board is not empty, not won, and playable
                     ratio[i][j] = (float) o_wins - x_wins;
                 }
                 
@@ -199,7 +199,7 @@ public class MiniMax {
         //System.out.println("Ratio9: " + ratio9);
         float ratio10 = Math.max(diagSumB(ratios), ratio6);
         //System.out.println("Ratio10: " + ratio10);
-        System.out.println(Math.max(ratio5, Math.max(ratio2, Math.max(ratio3, ratio4)))+ "-" + (Math.max(ratio10, Math.max(ratio7, Math.max(ratio8, ratio9)))));
+        //System.out.println(Math.max(ratio5, Math.max(ratio2, Math.max(ratio3, ratio4)))+ "-" + (Math.max(ratio10, Math.max(ratio7, Math.max(ratio8, ratio9)))));
         return(Math.max(ratio5, Math.max(ratio2, Math.max(ratio3, ratio4)))-(Math.max(ratio10, Math.max(ratio7, Math.max(ratio8, ratio9)))));
         
         
@@ -267,9 +267,7 @@ public class MiniMax {
                // System.out.println("value: " + value + " highest value: " + highestVal);
 
                 if (highestVal < value){
-                    if (depth == originalDepth){
-                        bestMove = move;
-                    }
+                    bestMove = move;
                     highestVal = value;
                     //System.out.println("Best move found: " + bestMove[0] + ", " + bestMove[1] + ", " + bestMove[2] + ", " + bestMove[3]);
                     //System.out.println("Highest value: " + highestVal);
@@ -278,10 +276,10 @@ public class MiniMax {
                 //max to maximize the value score,
                 //alpha = Math.max(alpha, value);
                 //if (beta <= alpha) {
-                  //  break; // Beta is the lowest other branch move, the non maximizing always chooses lowest
-                System.out.println("Trying Move: " + Arrays.toString(move) + " -> Eval: " + value);
+                //      break; // Beta is the lowest other branch move, the non maximizing always chooses lowest
+                //}//System.out.println("Trying Move: " + Arrays.toString(move) + " -> highest Eval: " + highestVal);
             }
-            System.out.println("Returning Highest value: " + highestVal);
+            //System.out.println("Returning Highest value: " + highestVal);
             temp = highestVal;
             highestVal = -Float.MAX_VALUE;
             return temp;
@@ -301,10 +299,10 @@ public class MiniMax {
                 //i don't know if we need to add a move tracker for the lowest value
 
 
-                //beta = Math.min(beta, value);  
-                //if (beta <= alpha) {
-                 //   break; 
-               // }
+                /*beta = Math.min(beta, value);  
+                if (beta <= alpha) {
+                   break; 
+                }*/
                 //min to minimize the value score,
                 //int [] bestMove1 = {move[0], move[1], move[2], move[3]};
                 //bestMove = bestMove1;
@@ -322,7 +320,7 @@ public class MiniMax {
 
     public int[] findBestMove(BigBoard board, int depth) {
         int[] bestMoveFound = null;
-        miniMax(board, depth, true, depth);
+        miniMax(board, depth, true, depth);//, -Float.MAX_VALUE, Float.MAX_VALUE);
         System.out.println("Final bestMove " + Arrays.toString(bestMove));
         bestMoveFound = bestMove;
         bestMove = null;//, -99999, 99999);
