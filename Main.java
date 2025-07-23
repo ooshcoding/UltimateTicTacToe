@@ -10,9 +10,12 @@ public class Main {
         BigBoard board = new BigBoard();
         char currentPlayer = 'X';
         Random rand = new Random();
-
+        TranspositionTable tt = new TranspositionTable();
+        tt.sbPossibilities();
+        tt.OutputCountsAsCSV(tt.getTable(), "smallBoard_transpositionTable.csv");
+        //tt.loadFromCSV("/Users/ryanding/VSCode/UltimateTicTacToe/smallBoard_transpositionTable.csv");
         
-       MiniMax minimax = new MiniMax();
+        MiniMax minimax = new MiniMax();
         
         //System.out.println(minimax.miniMax(board, 5, 0, false, -99999, 99999));
         while (!board.isGameOver()) {
@@ -54,7 +57,7 @@ public class Main {
                     }
                 }
             } else {
-                int[] move = minimax.findBestMove(board, 10);
+                int[] move = minimax.findBestMove(board, 10, tt);
 
                 board.makeMove(move[0], move[1], move[2], move[3], currentPlayer);
                 System.out.println("Computer played in board (" + move[0] + ", " + move[1] + ") at (" + move[2] + ", " + move[3] + ")");
@@ -65,6 +68,7 @@ public class Main {
 
         board.display();
         System.out.println("Game over! Winner: " + board.getWinner());
+        sc.close();
     }
     } 
 

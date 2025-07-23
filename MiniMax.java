@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Arrays;
-
 
 public class MiniMax {
     private int x_wins;
@@ -21,151 +21,15 @@ public class MiniMax {
         }
     }
 
-    public float[][] eval(BigBoard board){
+    public float[][] eval(BigBoard board, TranspositionTable map){
         
         SmallBoard [][] boards = board.getBoards();
 
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
                 SmallBoard sb = boards[i][j];
-                char [][] grid = sb.getGrid();
-                //col1
-                if (sb.isEmpty()){
-                    //Random rand = new Random();
-                    ratio[i][j] = 0;//rand.nextFloat(); 
-                     //neutral position, but change to match halfway of top and bottom x ratio
-                }
-                else if (sb.getWinner() == 'X'){ //if board is already WON
-                    ratio[i][j] = (float) -9;
-                    //board.display();
-                } else if (sb.getWinner() == 'O'){
-                    ratio[i][j] = (float) 9;
-                    //board.display();
-                }
-                else if (sb.isPlayable() == false && sb.getWinner() == ' '){ // board is tied.
-                    ratio[i][j] = (float) -6; //if the board is full and no winner, neutral position
-                }
-
-                for (int c = 0; c < 3; c++){ //ALL THIS IS FIRST COLUMN
-                    if (grid[0][c] != ' '){ //grid row c, col 0
-                        if (colWin(grid[0][c], c, grid)!= ' '){ //if column has possible win
-                            if (colWin(grid[0][c], c, grid) == 'X'){ // if the column has possible win for X
-                                x_wins++;
-                                } 
-                            else if (colWin(grid[0][c], c, grid) == 'O'){ // if column has possible win for O
-                                o_wins++;
-                            }
-                        }     
-                    }
-                    
-                }
                 
-                
-                for (int c = 0; c < 3; c++){
-                    if (grid[1][c] != ' '){
-                        if (colWin(grid[1][c], c, grid)!= ' '){ //if column has possible win
-                            if (colWin(grid[1][c], c, grid) == 'X'){ // if the column has possible win for X
-                                x_wins++;
-                                } 
-                            else if (colWin(grid[1][c], c, grid) == 'O'){ // if column has possible win for O
-                                o_wins++;
-                            }
-                        }     
-                    }
-                    
-                }
-                
-                for (int c = 0; c < 3; c++){
-                    if (grid[2][c] != ' '){
-                        if (colWin(grid[2][c], c, grid)!= ' '){ //if column has possible win
-                            if (colWin(grid[2][c], c, grid) == 'X'){ // if the column has possible win for X
-                                x_wins++;
-                                } 
-                            else if (colWin(grid[2][c], c, grid) == 'O'){ // if column has possible win for O
-                                o_wins++;
-                            }
-                        }     
-                    }
-                    
-                } // check for third column
-                 
-                for (int r = 0; r < 3; r++) {
-                    if (grid[r][0] != ' '){ 
-                        if (rowWin(grid[r][0], r, grid) != ' ') {
-                            if (rowWin(grid[r][0], r, grid) == 'X') {
-                                x_wins++;
-                            } else if (rowWin(grid[r][0], r, grid) == 'O') {
-                                o_wins++;
-                            }
-                        }
-                    }
-                }
-
-                for (int r = 0; r < 3; r++) {
-                    if (grid[r][1] != ' '){ 
-                        if (rowWin(grid[r][1], r, grid) != ' ') {
-                            if (rowWin(grid[r][1], r, grid) == 'X') {
-                                x_wins++;
-                            } else if (rowWin(grid[r][1], r, grid) == 'O') {
-                                o_wins++;
-                            }
-                        }
-                    }
-                }
-
-                for (int r = 0; r < 3; r++) {
-                    if (grid[r][2] != ' '){ 
-                        if (rowWin(grid[r][2], r, grid) != ' ') {
-                            if (rowWin(grid[r][2], r, grid) == 'X') {
-                                x_wins++;
-                            } else if (rowWin(grid[r][2], r, grid) == 'O') {
-                                o_wins++;
-                            }
-                        }
-                    }
-                }
-                for (int d = 0; d < 3; d++){ // first diagonal top left to bottom right
-                    if (grid[d][d] != ' '){
-                        if (grid[d][d] == 'X'){
-                            if (grid[0][0] != 'O' && grid[1][1] != 'O' && grid[2][2] != 'O'){
-                                x_wins++;
-                            } 
-                        }
-                        if (grid[d][d] == 'O'){
-                            if (grid[0][0] != 'X' && grid[1][1] != 'X' && grid[2][2] != 'X'){
-                                o_wins++;
-                            } 
-                        }
-                        
-                    }
-                }
-                for (int d = 0; d < 3; d++){
-                    if (grid[d][2-d] != ' '){
-                        if (grid[d][2-d] == 'X'){
-                            if (grid[0][2] != 'O' && grid[1][1] != 'O' && grid[2][0] != 'O'){
-                                x_wins++;
-                            } 
-                        }
-                        if (grid[d][2-d] == 'O'){
-                            if (grid[0][2] != 'X' && grid[1][1] != 'X' && grid[2][0] != 'X'){
-                                o_wins++;
-                            } 
-                        }
-                        
-                    }
-                }
-                
-
-                
-                if (!sb.isEmpty() && sb.getWinner() == ' ' && sb.isPlayable() == true){ //if the board is not empty, not won, and playable
-                    ratio[i][j] = (float) o_wins - x_wins;
-                }
-                
-            
-               
-                o_wins = 0;
-                x_wins = 0;
-                
+                ratio[i][j] = map.retrieve(sb.toString());
             }
         }
         return ratio;
@@ -248,12 +112,18 @@ public class MiniMax {
     }
 
     
-    public float miniMax(BigBoard board, int depth, boolean isMaximizing, int originalDepth, float alpha, float beta){
+    public float miniMax(BigBoard board, int depth, boolean isMaximizing, int originalDepth, float alpha, float beta, TranspositionTable map){
         ArrayList<int[]> legalMoves = board.getAvailableMoves();
         board.checkOverallWinner();
-        if (depth == 0 || board.getWinner() != ' ' || legalMoves.size() == 0) {//2nd 2 conditions will not happen
+        if (board.getWinner() == 'X'){
+            return -Float.MAX_VALUE; //if X wins, return a very low value
+        }
+        if (board.getWinner() == 'O'){
+            return Float.MAX_VALUE; //if O wins, return a very high value
+        }
+        if (depth == 0 || legalMoves.size() == 0) {//2nd 2 conditions will not happen
             //System.out.println("zero depth reached, returning evaluation: " + finalRatio(eval(board)));
-            return finalRatio(eval(board)); //if depth is 0, return the evaluation of the board
+            return finalRatio(eval(board, map)); //if depth is 0, return the evaluation of the board
         } //reset highestVal for nex0 t call
 
         if (isMaximizing){
@@ -264,7 +134,7 @@ public class MiniMax {
                 BigBoard boardCopy = deepCopy(board); 
                 boardCopy.makeMove(move[0], move[1], move[2], move[3], 'O');
                 //System.out.println("Making Maximizing move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3] + "depth: " + depth);
-                float value = miniMax(boardCopy, depth - 1, false, originalDepth, alpha, beta); //make highestval and lowestval compare with every option.
+                float value = miniMax(boardCopy, depth - 1, false, originalDepth, alpha, beta, map); //make highestval and lowestval compare with every option.
                 //highestVal = Math.max(highestVal, value); 
                // System.out.println("Move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
                // System.out.println("value: " + value + " highest value: " + highestVal);
@@ -296,7 +166,7 @@ public class MiniMax {
                 //System.out.println("Minimizing move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3] + "depth: " + depth);
 
                 
-                float value = miniMax(boardCopy, depth - 1, true, originalDepth, alpha, beta);
+                float value = miniMax(boardCopy, depth - 1, true, originalDepth, alpha, beta, map);
                 if (lowestVal > value){
                     lowestVal = value;//update best move to the current move
                 }
@@ -319,10 +189,10 @@ public class MiniMax {
     }
 
 
-    public int[] findBestMove(BigBoard board, int depth) {
+    public int[] findBestMove(BigBoard board, int depth, TranspositionTable map) {
         int[] bestMoveFound = null;
         //System.out.println(depth + "depth!");
-        miniMax(board, depth, true, depth, -Float.MAX_VALUE, Float.MAX_VALUE);
+        miniMax(board, depth, true, depth, -Float.MAX_VALUE, Float.MAX_VALUE, map);
         //System.out.println("Final bestMove " + Arrays.toString(bestMove));
         bestMoveFound = bestMove;
         bestMove = null;//, -99999, 99999);
