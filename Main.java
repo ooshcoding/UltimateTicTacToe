@@ -10,9 +10,11 @@ public class Main {
         BigBoard board = new BigBoard();
         char currentPlayer = 'X';
         Random rand = new Random();
+        int depth;
+        int count = 0;
         TranspositionTable tt = new TranspositionTable();
-        //tt.sbPossibilities(); ALREADY RUN
-        //tt.OutputCountsAsCSV(tt.getTable(), "smallBoard_transpositionTable.csv"); JUST LOAD IN ON NEXT LINE
+        tt.sbPossibilities(); //ALREADY RUN
+        tt.OutputCountsAsCSV(tt.getTable(), "smallBoard_transpositionTable.csv"); //JUST LOAD IN ON NEXT LINE
         tt.loadFromCSV("/Users/ryanding/VSCode/UltimateTicTacToe/smallBoard_transpositionTable.csv");
         
         MiniMax minimax = new MiniMax();
@@ -57,10 +59,23 @@ public class Main {
                     }
                 }
             } else {
-                int[] move = minimax.findBestMove(board, 10, tt);
+                if (count < 4){
+                    depth = 8;
+                }
+                else{
+                    depth = 11;
+                }
+                long startTime = System.nanoTime();
+                int[] move = minimax.findBestMove(board, depth, tt);
+                count++;
+                long endTime = System.nanoTime();
+                long durationNano = endTime - startTime;
 
+                double durationMs = durationNano / 1_000_000.0;
+                double durationSeconds = durationNano / 1_000_000_000.0;
                 board.makeMove(move[0], move[1], move[2], move[3], currentPlayer);
                 System.out.println("Computer played in board (" + move[0] + ", " + move[1] + ") at (" + move[2] + ", " + move[3] + ")");
+                System.out.printf("AI calculation time: %.2f ms (%.3f seconds)%n", durationMs, durationSeconds);
             }
 
             currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';

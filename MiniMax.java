@@ -21,6 +21,7 @@ public class MiniMax {
         }
     }
 
+    
     public float[][] eval(BigBoard board, TranspositionTable map){
         
         SmallBoard [][] boards = board.getBoards();
@@ -29,7 +30,7 @@ public class MiniMax {
             for (int j = 0; j < 3; j++){
                 SmallBoard sb = boards[i][j];
                 
-                ratio[i][j] = map.retrieve(sb.toString());
+                ratio[i][j] = map.retrieve(sb.toInt());
             }
         }
         return ratio;

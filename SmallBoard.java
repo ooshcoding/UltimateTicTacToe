@@ -4,19 +4,30 @@ public class SmallBoard {
     private char[][] grid = new char[3][3];
     private char winner = ' ';
     private boolean full = false;
-    private int count = 0;
+   // private int filledCells;
     public SmallBoard() {
         for (char[] row : grid)
             Arrays.fill(row, ' ');
+        //filledCells = 0;
     }
 
-    public String toString(){
-        String ret = "";
-        for (int i =0; i < 3; i++){
-            for (int j = 0; j < 3; j++)
-                ret+=grid[i][j];
+    public String toString() {
+        StringBuilder stb = new StringBuilder(9);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                stb.append(grid[i][j]);
+            }
         }
-        return ret;
+        return stb.toString();
+    }
+    public int toInt() {
+        int result = 0;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                result = result * 3 + (grid[i][j] == 'X' ? 0 : grid[i][j] == 'O' ? 1 : 2);
+            }
+        }
+        return result;
     }
 
     public Float eval(SmallBoard Sb){
@@ -163,7 +174,6 @@ public class SmallBoard {
         return ret;
     }
 
-
     public float diagSum1(float[][]ratios){return ratios[0][0] + ratios[1][1] + ratios[2][2];}
     public float diagSumA(float[][]ratios){return -ratios[0][0] - ratios[1][1] - ratios[2][2];} 
     public float diagSumB(float[][]ratios){return -ratios[0][2] - ratios[1][1] - ratios[2][0];}
@@ -216,7 +226,7 @@ public class SmallBoard {
 
         if (grid[r][c] == ' ') { //if cell empty
             grid[r][c] = player; //set to player
-            checkWinner(); //check winner
+            checkWinner(); 
             return true;
         }
         return false;
@@ -265,8 +275,8 @@ public class SmallBoard {
         for (char[] row : grid){
             for (char cell : row)
                 if (cell == ' ') {full = false; break;}
-                
-            if (!full) break;}// if any cell is empty, not full
+            
+            if (!full){ break;}}// if any cell is empty, not full
     }
 
     public boolean isPlayable() {

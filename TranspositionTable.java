@@ -7,22 +7,22 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.Map;
 
 public class TranspositionTable {
-    private ConcurrentHashMap<String, Float> table;
+    private ConcurrentHashMap<Integer, Float> table;
 
     public TranspositionTable(){
         table = new java.util.concurrent.ConcurrentHashMap<>();
     }
 
-    public ConcurrentHashMap <String, Float> getTable() {
+    public ConcurrentHashMap <Integer, Float> getTable() {
         return table;
     }
-    public void store(String key, Float value) {
+    public void store(Integer key, Float value) {
         table.put(key, value);
     }
-    public Float retrieve(String key) {
+    public Float retrieve(Integer key) {
         return table.get(key);
     }
-    public boolean contains(String key) {
+    public boolean contains(Integer key) {
         return table.containsKey(key);
     }
     public char[][] ifA(int a, char[][] grid) {
@@ -179,9 +179,7 @@ public char[][] ifF(int a, int b, int c, int d, int e, int f, char[][]grid){
                                         for (int i = 0; i < 3; i++){
                                             grid = ifI(a, b, c, d, e, f, g, h, i, grid);
                                             
-                                            String key = "" + grid[0][0] + grid[0][1] + grid[0][2] +
-                                                    grid[1][0] + grid[1][1] + grid[1][2] +
-                                                    grid[2][0] + grid[2][1] + grid[2][2];
+                                            int key = sb.toInt();
                                             
                                             
                                     
@@ -199,10 +197,10 @@ public char[][] ifF(int a, int b, int c, int d, int e, int f, char[][]grid){
         }
     }
 
-    public void OutputCountsAsCSV(ConcurrentHashMap<String, Float> table, String filename) {
+    public void OutputCountsAsCSV(ConcurrentHashMap<Integer, Float> table, String filename) {
             
     try (FileWriter writer = new FileWriter(filename)) {
-        for (ConcurrentHashMap.Entry<String, Float> entry : table.entrySet()) {
+        for (ConcurrentHashMap.Entry<Integer, Float> entry : table.entrySet()) {
             String rowText = String.format("%s,%f\n", entry.getKey(), entry.getValue());  
             writer.write(rowText);
         }
@@ -219,7 +217,7 @@ public char[][] ifF(int a, int b, int c, int d, int e, int f, char[][]grid){
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length == 2) {
-                    String key = parts[0];
+                    int key = Integer.parseInt((parts[0]));
                     Float value = Float.parseFloat(parts[1]);
                     table.put(key, value);
                 }
