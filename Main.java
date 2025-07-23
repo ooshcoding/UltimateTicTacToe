@@ -11,9 +11,9 @@ public class Main {
         char currentPlayer = 'X';
         Random rand = new Random();
         TranspositionTable tt = new TranspositionTable();
-        tt.sbPossibilities();
-        tt.OutputCountsAsCSV(tt.getTable(), "smallBoard_transpositionTable.csv");
-        //tt.loadFromCSV("/Users/ryanding/VSCode/UltimateTicTacToe/smallBoard_transpositionTable.csv");
+        //tt.sbPossibilities(); ALREADY RUN
+        //tt.OutputCountsAsCSV(tt.getTable(), "smallBoard_transpositionTable.csv"); JUST LOAD IN ON NEXT LINE
+        tt.loadFromCSV("/Users/ryanding/VSCode/UltimateTicTacToe/smallBoard_transpositionTable.csv");
         
         MiniMax minimax = new MiniMax();
         

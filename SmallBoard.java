@@ -150,15 +150,10 @@ public class SmallBoard {
             }
         }
         
-        if (Sb.getWinner() == ' '){
-            System.out.println("playable: " + Sb.isPlayable());
-        }
         
         
         if (!Sb.isEmpty() && Sb.getWinner() == ' ' && Sb.isPlayable() == true){ //if the board is not empty, not won, and playable
             ret = (float) o_wins - x_wins;
-            Sb.printSmallBoard();
-            System.out.println("Eval: " + ret);
         }
     
        
@@ -235,6 +230,7 @@ public class SmallBoard {
         return true;
     }
     public void checkWinner() {
+        winner = ' ';
         /*System.out.println("GRID----------------------");
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
@@ -243,30 +239,34 @@ public class SmallBoard {
             System.out.println();
         } */
         for (int i = 0; i < 3; i++) {
-            
             if (grid[i][0] != ' ' && grid[i][0]==grid[i][1] && grid[i][1] == grid[i][2]){
-                
                 winner = grid[i][0];
+                return;
                 }
                 
                 
             if (grid[0][i] != ' ' && grid[0][i] == grid[1][i] && grid[1][i] == grid[2][i]){
                 winner = grid[0][i];
+                return;
             }
                 
                 
                 
         }
                 
-        if (grid[0][0] != ' ' && grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2])
+        if (grid[0][0] != ' ' && grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2]){
             winner = grid[0][0];
-        if (grid[0][2] != ' ' && grid[0][2] == grid[1][1] && grid[1][1] == grid[2][0])
+            return;}
+        if (grid[0][2] != ' ' && grid[0][2] == grid[1][1] && grid[1][1] == grid[2][0]){
             winner = grid[0][2];
+            return;}
 
         full = true;
-        for (char[] row : grid)
+        for (char[] row : grid){
             for (char cell : row)
-                if (cell == ' ') full = false;
+                if (cell == ' ') {full = false; break;}
+                
+            if (!full) break;}// if any cell is empty, not full
     }
 
     public boolean isPlayable() {

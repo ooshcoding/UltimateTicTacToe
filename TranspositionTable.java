@@ -183,7 +183,7 @@ public char[][] ifF(int a, int b, int c, int d, int e, int f, char[][]grid){
                                                     grid[1][0] + grid[1][1] + grid[1][2] +
                                                     grid[2][0] + grid[2][1] + grid[2][2];
                                             
-                                            System.out.println(sb.eval(sb));
+                                            
                                     
                                             table.put(key, sb.eval(sb));
                                             
