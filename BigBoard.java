@@ -21,7 +21,7 @@ public class BigBoard {
     }
     public boolean makeMove(int br, int bc, int r, int c, char player) {
         if (!isLegalMove(br, bc, r, c)) return false;
-        
+        if (boards[br][bc].getWinner() != ' ') return false;
         boolean moveMade = boards[br][bc].makeMove(r, c, player);
         if (moveMade) {
             nextBoardRow = r;
@@ -108,14 +108,14 @@ public class BigBoard {
             for (int bc = 0; bc < 3; bc++)
                 if (((nextBoardRow == -1 && nextBoardCol == -1) || (br == nextBoardRow && bc == nextBoardCol)) &&
                         boards[br][bc].isPlayable()){
-                            
-                        //System.out.println("br: " + br + " bc: " + bc);
-                        //System.out.println(nextBoardRow + "nextboardrow + " + "nextboardcol " + nextBoardCol);
-                    for (int r = 0; r < 3; r++)
-                        for (int c = 0; c < 3; c++)
-                            if (boards[br][bc].getCell(r, c) == ' ')
+                    for (int r = 0; r < 3; r++){
+                        for (int c = 0; c < 3; c++){
+                            if (boards[br][bc].getCell(r, c) == ' '){
                                 moves.add(new int[]{br, bc, r, c});
-                                }
+                            }    
+                        }
+                    }
+                }
         return moves;
     }
 

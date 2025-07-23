@@ -9,6 +9,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         BigBoard board = new BigBoard();
         char currentPlayer = 'X';
+        
         Random rand = new Random();
         int depth;
         int count = 0;
@@ -59,13 +60,19 @@ public class Main {
                     }
                 }
             } else {
-                if (count < 4){
-                    depth = 8;
+                if (count < 7){
+                    depth = 9;
+                }
+                else if (count < 35){
+                    depth = 10;
                 }
                 else{
                     depth = 11;
                 }
                 long startTime = System.nanoTime();
+                if (bc == -1 || br == -1){
+                    depth--;
+                }
                 int[] move = minimax.findBestMove(board, depth, tt);
                 count++;
                 long endTime = System.nanoTime();

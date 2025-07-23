@@ -8,7 +8,7 @@ public class MiniMax {
     private int o_wins;
      // Original depth for the minimax algorithm
     private float[][] ratio = new float[3][3];
-    private int[] bestMove = new int[2]; // Store the best move found
+    private int[] bestMove = new int[4]; // Store the best move found
     //private static float highestVal = -99999999; // Initialize to a very low value
     //private static float lowestVal = 9999999;
     public MiniMax() {
