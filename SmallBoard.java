@@ -20,6 +20,14 @@ public class SmallBoard {
         }
         return stb.toString();
     }
+    public void reset(){
+        for (char[] row : grid) {
+            Arrays.fill(row, ' ');
+        }
+        winner = ' ';
+        full = false;
+        //filledCells = 0;
+    }
     public int toInt() {
         int result = 0;
         for (int i = 0; i < 3; i++) {

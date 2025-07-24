@@ -101,6 +101,14 @@ public class BigBoard {
         return nextBoardCol;
     }
     
+    public void reset(){
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                boards[i][j].reset();
+        overallWinner = ' ';
+        nextBoardRow = -1;
+        nextBoardCol = -1;
+    }
     public ArrayList<int[]> getAvailableMoves() {
         ArrayList<int[]> moves = new ArrayList<>();
        // System.out.println("nextboardrow: " + nextBoardRow + " nextboardcol: " + nextBoardCol);
