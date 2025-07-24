@@ -34,8 +34,32 @@ public class Main {
                 System.out.println("You must play in board (" + br + ", " + bc + ")");
             }
 
-
             if (currentPlayer == 'X') {
+                boolean valid = false;
+                while (!valid) {
+                    if (br == -1 || bc == -1) {
+                        System.out.print("Enter which board to play in (boardRow boardCol): ");
+                        br = sc.nextInt();
+                        bc = sc.nextInt();
+                        if (board.getBoards()[br][bc].getWinner() != ' ') {
+                            System.out.println("This board is already won. Choose another board.");
+                            br = -1; bc = -1;
+                            continue;
+                        }
+                    }
+
+                    System.out.print("Enter your move (row col) inside the selected small board: ");
+                    int r = sc.nextInt();
+                    int c = sc.nextInt();
+                    
+                    if (board.makeMove(br, bc, r, c, currentPlayer)) {
+                        valid = true;
+                    }
+                    else if(!board.makeMove(br, bc, r, c, currentPlayer)) {
+                        System.out.println("Invalid move. Try again.");
+                    }
+                }
+            } else {
                 if (count < 7){
                     depth = 9;
                 }
@@ -96,33 +120,6 @@ public class Main {
                 System.out.println("Computer played in board (" + move[0] + ", " + move[1] + ") at (" + move[2] + ", " + move[3] + ")");
                 System.out.printf("AI calculation time: %.2f ms (%.3f seconds)%n", durationMs, durationSeconds);
             }
-
-            else {
-                boolean valid = false;
-                while (!valid) {
-                    if (br == -1 || bc == -1) {
-                        System.out.print("Enter which board to play in (boardRow boardCol): ");
-                        br = sc.nextInt();
-                        bc = sc.nextInt();
-                        if (board.getBoards()[br][bc].getWinner() != ' ') {
-                            System.out.println("This board is already won. Choose another board.");
-                            br = -1; bc = -1;
-                            continue;
-                        }
-                    }
-
-                    System.out.print("Enter your move (row col) inside the selected small board: ");
-                    int r = sc.nextInt();
-                    int c = sc.nextInt();
-                    
-                    if (board.makeMove(br, bc, r, c, currentPlayer)) {
-                        valid = true;
-                    }
-                    else if(!board.makeMove(br, bc, r, c, currentPlayer)) {
-                        System.out.println("Invalid move. Try again.");
-                    }
-                }
-            } 
 
             currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
         }
