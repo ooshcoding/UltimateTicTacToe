@@ -34,7 +34,70 @@ public class Main {
                 System.out.println("You must play in board (" + br + ", " + bc + ")");
             }
 
+
             if (currentPlayer == 'X') {
+                if (count < 7){
+                    depth = 9;
+                }
+                else if (count < 27){
+                    depth = 10;
+                }
+                else{
+                    depth = 11;
+                }
+                long startTime = System.nanoTime();
+                if (bc == -1 || br == -1){
+                    depth--;
+                }
+                int[] move = minimax.findBestMove(board, depth, tt);
+                count++;
+                // Check if we got a valid move
+                if (move == null) {
+                    System.out.println("ERROR: AI could not find a move!");
+                    // Try to get any available move as emergency fallback
+                    java.util.ArrayList<int[]> emergencyMoves = board.getAvailableMoves();
+                    if (!emergencyMoves.isEmpty()) {
+                        move = emergencyMoves.get(0);
+                        System.out.println("Using emergency move: " + java.util.Arrays.toString(move));
+                    } else {
+                        System.out.println("CRITICAL ERROR: No moves available at all!");
+                        break; // Exit the game loop
+                    }
+                }
+
+                // Validate move array
+                if (move.length != 4) {
+                    System.out.println("ERROR: Invalid move array length: " + move.length);
+                    continue;
+                }
+
+
+
+                // Validate move coordinates
+                if (move[0] < 0 || move[0] > 2 || move[1] < 0 || move[1] > 2 || 
+                    move[2] < 0 || move[2] > 2 || move[3] < 0 || move[3] > 2) {
+                    System.out.println("ERROR: Move coordinates out of bounds: " + java.util.Arrays.toString(move));
+                    continue;
+                }
+
+                boolean moveSuccess = board.makeMove(move[0], move[1], move[2], move[3], currentPlayer);
+        
+                if (!moveSuccess) {
+                    System.out.println("ERROR: Failed to make AI move: " + java.util.Arrays.toString(move));
+                    continue;
+                }
+                
+                long endTime = System.nanoTime();
+                long durationNano = endTime - startTime;
+
+                double durationMs = durationNano / 1_000_000.0;
+                double durationSeconds = durationNano / 1_000_000_000.0;
+                //board.makeMove(move[0], move[1], move[2], move[3], currentPlayer);
+                System.out.println("Computer played in board (" + move[0] + ", " + move[1] + ") at (" + move[2] + ", " + move[3] + ")");
+                System.out.printf("AI calculation time: %.2f ms (%.3f seconds)%n", durationMs, durationSeconds);
+            }
+
+            else {
                 boolean valid = false;
                 while (!valid) {
                     if (br == -1 || bc == -1) {
@@ -59,31 +122,7 @@ public class Main {
                         System.out.println("Invalid move. Try again.");
                     }
                 }
-            } else {
-                if (count < 7){
-                    depth = 9;
-                }
-                else if (count < 35){
-                    depth = 10;
-                }
-                else{
-                    depth = 11;
-                }
-                long startTime = System.nanoTime();
-                if (bc == -1 || br == -1){
-                    depth--;
-                }
-                int[] move = minimax.findBestMove(board, depth, tt);
-                count++;
-                long endTime = System.nanoTime();
-                long durationNano = endTime - startTime;
-
-                double durationMs = durationNano / 1_000_000.0;
-                double durationSeconds = durationNano / 1_000_000_000.0;
-                board.makeMove(move[0], move[1], move[2], move[3], currentPlayer);
-                System.out.println("Computer played in board (" + move[0] + ", " + move[1] + ") at (" + move[2] + ", " + move[3] + ")");
-                System.out.printf("AI calculation time: %.2f ms (%.3f seconds)%n", durationMs, durationSeconds);
-            }
+            } 
 
             currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
         }
