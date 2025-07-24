@@ -22,7 +22,7 @@ public class MiniMax {
     }
     
     
-    public float[][] eval(BigBoard board){// TranspositionTable map){
+    public float[][] eval(BigBoard board, TranspositionTable map){
         
         SmallBoard [][] boards = board.getBoards();
 
@@ -30,7 +30,7 @@ public class MiniMax {
             for (int j = 0; j < 3; j++){
                 SmallBoard sb = boards[i][j];
                 
-                ratio[i][j] = sb.eval(sb);
+                ratio[i][j] = map.retrieve(sb.toInt());
             }
         }
         return ratio;
@@ -113,7 +113,7 @@ public class MiniMax {
     }
 
     
-    public float miniMax(BigBoard board, int depth, boolean isMaximizing, int originalDepth, float alpha, float beta){// TranspositionTable map){
+    public float miniMax(BigBoard board, int depth, boolean isMaximizing, int originalDepth, TranspositionTable map){
         ArrayList<int[]> legalMoves = board.getAvailableMoves();
         board.checkOverallWinner();
         if (board.getWinner() == 'X'){
@@ -124,7 +124,7 @@ public class MiniMax {
         }
         if (depth == 0 || legalMoves.size() == 0) {//2nd 2 conditions will not happen
             //System.out.println("zero depth reached, returning evaluation: " + finalRatio(eval(board)));
-            return finalRatio(eval(board));//, map)); //if depth is 0, return the evaluation of the board
+            return finalRatio(eval(board, map));//, map)); //if depth is 0, return the evaluation of the board
         } //reset highestVal for nex0 t call
 
         if (isMaximizing){
@@ -135,7 +135,7 @@ public class MiniMax {
                 BigBoard boardCopy = deepCopy(board); 
                 boardCopy.makeMove(move[0], move[1], move[2], move[3], 'O');
                 //System.out.println("Making Maximizing move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3] + "depth: " + depth);
-                float value = miniMax(boardCopy, depth - 1, false, originalDepth, alpha, beta);//, map); //make highestval and lowestval compare with every option.
+                float value = miniMax(boardCopy, depth - 1, false, originalDepth, map); //make highestval and lowestval compare with every option.
                 //highestVal = Math.max(highestVal, value); 
                // System.out.println("Move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3]);
                // System.out.println("value: " + value + " highest value: " + highestVal);
@@ -151,10 +151,10 @@ public class MiniMax {
                     
                 }
                 //max to maximize the value score,
-                alpha = Math.max(alpha, value);
+                /*alpha = Math.max(alpha, value);
                 if (beta <= alpha) {
                       break; // Beta is the lowest other branch move, the non maximizing always chooses lowest
-                }
+                }*/
             }
             //System.out.println("Returning Highest value: " + highestVal + "depth: " + depth);
             return highestVal;
@@ -167,17 +167,17 @@ public class MiniMax {
                 //System.out.println("Minimizing move: " + move[0] + ", " + move[1] + ", " + move[2] + ", " + move[3] + "depth: " + depth);
 
                 
-                float value = miniMax(boardCopy, depth - 1, true, originalDepth, alpha, beta);//, map);
+                float value = miniMax(boardCopy, depth - 1, true, originalDepth, map);//, map);
                 if (lowestVal > value){
                     lowestVal = value;//update best move to the current move
                 }
                 //i don't know if we need to add a move tracker for the lowest value
 
 
-                beta = Math.min(beta, value);  
+                /*beta = Math.min(beta, value);  
                 if (beta <= alpha) {
                    break; 
-                }
+                }*/
             }
             //System.out.println("Lowest value: " + lowestVal + "depth: " + depth);
             return lowestVal;
@@ -190,10 +190,10 @@ public class MiniMax {
     }
 
 
-    public int[] findBestMove(BigBoard board, int depth){//}, TranspositionTable map) {
+    public int[] findBestMove(BigBoard board, int depth, TranspositionTable map) {
         int[] bestMoveFound = null;
         //System.out.println(depth + "depth!");
-        miniMax(board, depth, true, depth, -Float.MAX_VALUE, Float.MAX_VALUE);//, map);
+        miniMax(board, depth, true, depth, map);//, map);
         //System.out.println("Final bestMove " + Arrays.toString(bestMove));
         bestMoveFound = bestMove;
         bestMove = null;//, -99999, 99999);

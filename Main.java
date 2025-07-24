@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Main {
-    private static int depth;
+    private static int depth = 6;
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         
@@ -37,11 +37,11 @@ public class Main {
         
         Random rand = new Random();
         int count = 0;
-        /*TranspositionTable tt = new TranspositionTable();
+        TranspositionTable tt = new TranspositionTable();
         tt.sbPossibilities(); //ALREADY RUN
         tt.OutputCountsAsCSV(tt.getTable(), "smallBoard_transpositionTable.csv"); //JUST LOAD IN ON NEXT LINE
         tt.loadFromCSV("/Users/ryanding/VSCode/UltimateTicTacToe/smallBoard_transpositionTable.csv");
-        */
+        
         MiniMax minimax = new MiniMax();
         
         //System.out.println(minimax.miniMax(board, 5, 0, false, -99999, 99999));
@@ -97,7 +97,7 @@ public class Main {
                 if (bc == -1 || br == -1){
                     depth--;
                 }
-                int[] move = minimax.findBestMove(board, depth);//, tt);
+                int[] move = minimax.findBestMove(board, depth, tt);
                 count++;
                 // Check if we got a valid move
                 if (move == null) {
@@ -244,7 +244,7 @@ public static void runPerformanceTest() {
     MiniMax minimax = new MiniMax();
     
     // Prepare CSV file
-    try (FileWriter csvWriter = new FileWriter("ABP_TIME_DEPTH" + depth + ".csv")) {
+    try (FileWriter csvWriter = new FileWriter("NO_ABP_TIME_DEPTH" + depth + ".csv")) {
         csvWriter.write("Depth,Simulation Run,Time,Board Number\n");
         
         System.out.println("Starting performance testing...");
@@ -270,8 +270,7 @@ public static void runPerformanceTest() {
                     board.makeMove(moves[i][0], moves[i][1], moves[i][2], moves[i][3], players[i]);
                 }
                 
-                // Determine appropriate depth (using original logic)
-                depth = 1; // Since we're at move 4, count would be 3
+                        ; // Since we're at move 4, count would be 3
                 boolean nextBoardRestricted = true;
                 
                 // Check if next board is unrestricted
@@ -283,7 +282,7 @@ public static void runPerformanceTest() {
                 
                 // Time the AI move calculation
                 long startTime = System.nanoTime();
-                int[] move = minimax.findBestMove(board, depth);//, tt);
+                int[] move = minimax.findBestMove(board, depth, tt);
                 long endTime = System.nanoTime();
                 
                 // Calculate timing
