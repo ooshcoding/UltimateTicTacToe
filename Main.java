@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Main {
-
+    private static int depth;
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         
@@ -36,13 +36,12 @@ public class Main {
         char currentPlayer = 'X';
         
         Random rand = new Random();
-        int depth;
         int count = 0;
-        TranspositionTable tt = new TranspositionTable();
+        /*TranspositionTable tt = new TranspositionTable();
         tt.sbPossibilities(); //ALREADY RUN
         tt.OutputCountsAsCSV(tt.getTable(), "smallBoard_transpositionTable.csv"); //JUST LOAD IN ON NEXT LINE
         tt.loadFromCSV("/Users/ryanding/VSCode/UltimateTicTacToe/smallBoard_transpositionTable.csv");
-        
+        */
         MiniMax minimax = new MiniMax();
         
         //System.out.println(minimax.miniMax(board, 5, 0, false, -99999, 99999));
@@ -98,7 +97,7 @@ public class Main {
                 if (bc == -1 || br == -1){
                     depth--;
                 }
-                int[] move = minimax.findBestMove(board, depth, tt);
+                int[] move = minimax.findBestMove(board, depth);//, tt);
                 count++;
                 // Check if we got a valid move
                 if (move == null) {
@@ -245,8 +244,8 @@ public static void runPerformanceTest() {
     MiniMax minimax = new MiniMax();
     
     // Prepare CSV file
-    try (FileWriter csvWriter = new FileWriter("ai_performance_results.csv")) {
-        csvWriter.write("BoardID,SimulationRun,TimeMs,TimeSeconds,Depth,Move,AvailableMoves,NextBoardRestricted\n");
+    try (FileWriter csvWriter = new FileWriter("ABP_TIME_DEPTH" + depth + ".csv")) {
+        csvWriter.write("Depth,Simulation Run,Time,Board Number\n");
         
         System.out.println("Starting performance testing...");
         
@@ -264,7 +263,7 @@ public static void runPerformanceTest() {
             }
             
             // Run 50 simulations for this game state
-            for (int sim = 1; sim <= 50; sim++) {
+            for (int sim = 1; sim <= 30; sim++) {
                 // Create fresh board from game state
                 BigBoard board = new BigBoard();
                 for (int i = 0; i < 3; i++) {
@@ -272,7 +271,7 @@ public static void runPerformanceTest() {
                 }
                 
                 // Determine appropriate depth (using original logic)
-                int depth = 1; // Since we're at move 4, count would be 3
+                depth = 1; // Since we're at move 4, count would be 3
                 boolean nextBoardRestricted = true;
                 
                 // Check if next board is unrestricted
@@ -284,7 +283,7 @@ public static void runPerformanceTest() {
                 
                 // Time the AI move calculation
                 long startTime = System.nanoTime();
-                int[] move = minimax.findBestMove(board, depth, tt);
+                int[] move = minimax.findBestMove(board, depth);//, tt);
                 long endTime = System.nanoTime();
                 
                 // Calculate timing
@@ -301,10 +300,10 @@ public static void runPerformanceTest() {
                 }
                 
                 // Write to CSV
-                csvWriter.write(String.format("depth: %d,%d,%.6f\n", depth, sim, durationSeconds));                
+                csvWriter.write(String.format("%d,%d,%.6f,%d\n", depth, sim, durationSeconds, boardId+1));                
                 // Progress indicator
                 if (sim % 10 == 0) {
-                    System.out.printf("  Completed %d/50 simulations (avg: %.2f ms)\n", sim, durationMs);
+                    System.out.printf("  Completed %d/30 simulations (avg: %.2f ms)\n", sim, durationMs);
                 }
             }
         }
