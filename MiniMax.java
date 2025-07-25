@@ -16,7 +16,7 @@ public class MiniMax {
         this.o_wins = 0;
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
-                ratio[i][j] = 0;
+                evaluation[i][j] = 0;
             }
         }
     }

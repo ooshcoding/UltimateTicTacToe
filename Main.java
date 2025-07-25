@@ -14,7 +14,7 @@ public class Main {
         System.out.println("=== Ultimate Tic Tac Toe ===");
         System.out.println("1. Play Game");
         System.out.println("2. Run AI Performance Test");
-        System.out.println("3. Run AI Performance Test with 30 Game States");
+        System.out.println("3. Simulate AI vs. Random with 30 Game States");
         System.out.print("Choose option (1, 2, or 3): ");
         
         int choice = sc.nextInt();
@@ -22,15 +22,16 @@ public class Main {
         if (choice == 1) {
             playGame();
         } else if (choice == 2) {
-            runPerformanceTest();
+            System.out.println("Timing AI performance test...");
+            runPerformanceTest(simulation_file_name);
         } 
         else if (choice == 3) {
-            System.out.println("Running performance test with 30 game states...");
+            System.out.println("Running simulation against random with 30 game states...");
             simulateGames(30);        
         }
         else {
             System.out.println("Invalid choice. Running performance test by default.");
-            runPerformanceTest();
+            runPerformanceTest(simulation_file_name);
         }
         
         sc.close();
@@ -262,7 +263,7 @@ public class Main {
 public static ArrayList<int[][]> generateTestGameStates() {
     ArrayList<int[][]> gameStates = new ArrayList<>();
     Random rand = new Random(12345); 
-    
+
     int[][][] predefinedStates = {
         // State 1: Center start
         {{1, 1, 1, 1}, {1, 1, 0, 0}, {0, 0, 2, 2}},
