@@ -14,7 +14,7 @@ import java.util.Arrays;
 public class ParallelMiniMax {
     private int x_wins;
     private int o_wins;
-    private float[][] ratio = new float[3][3];
+    private float[][] evaluations = new float[3][3];
     private int[] bestMove = new int[4];
     
     //only parallelizing the first level gives better performance
@@ -27,7 +27,7 @@ public class ParallelMiniMax {
         // Initialize ratio matrix to zeros
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
-                ratio[i][j] = 0;
+                evaluations[i][j] = 0;
             }
         }
     }
@@ -40,48 +40,48 @@ public class ParallelMiniMax {
                 SmallBoard sb = boards[i][j];
                 Float value = map.retrieve(sb.toInt());
                 if (value != null) {
-                    ratio[i][j] = value;
+                    evaluations[i][j] = value;
                 } else {
                     // DEBUG: This shouldn't happen often
                     System.out.println("Missing evaluation for board state: |" + sb.toString() + "|");
                 }
             }
         }
-        return ratio;
+        return evaluations;
     }
     
     // Calculate final board position value - this took me a while to get right
-    public float finalRatio(float[][] ratios){
-        float finalRatio = -999;
-        float finalRatio2 = -999;
-        
-        // Check all possible winning combinations for both players
-        float ratio1 = Math.max(finalRatio, rowSum(ratios, 0));
-        float ratio2 = Math.max(rowSum(ratios, 1), rowSum(ratios, 2));
-        float ratio3 = Math.max(colSum(ratios, 0), colSum(ratios, 1));
-        float ratio4 = Math.max(colSum(ratios, 2), diagSum1(ratios));
-        float ratio5 = Math.max(diagSum2(ratios), ratio1);
+    public float finalEval(float[][] evals){
 
-        // Same for opponent (negative values)
-        float ratio6 = Math.max(finalRatio2, rowSum2(ratios, 0));
-        float ratio7 = Math.max(rowSum2(ratios, 1), rowSum2(ratios, 2));
-        float ratio8 = Math.max(colSum2(ratios, 0), colSum2(ratios, 1));
-        float ratio9 = Math.max(colSum2(ratios, 2), diagSumA(ratios));
-        float ratio10 = Math.max(diagSumB(ratios), ratio6);
+        float finalEval = -999;
+        float finalEval2 = -999;
+        float eval1 = Math.max(finalEval, rowSum(evals, 0));
+        float eval2 = Math.max(rowSum(evals, 1), rowSum(evals, 2));
+        float eval3 = Math.max(colSum(evals, 0), colSum(evals, 1));
+        float eval4 = Math.max(colSum(evals, 2), diagSum1(evals));
+        float eval5 = Math.max(diagSum2(evals), eval1);
+        float eval6 = Math.max(finalEval2, rowSum2(evals, 0));
+
+        float eval7 = Math.max(rowSum2(evals, 1), rowSum2(evals, 2));
+        float eval8 = Math.max(colSum2(evals, 0), colSum2(evals, 1));
+        float eval9 = Math.max(colSum2(evals, 2), diagSumA(evals));
+        float eval10 = Math.max(diagSumB(evals), eval6);
         
-        // Return difference between best attacking and defending positions
-        return(Math.max(ratio5, Math.max(ratio2, Math.max(ratio3, ratio4)))-(Math.max(ratio10, Math.max(ratio7, Math.max(ratio8, ratio9)))));
+        
+        return(Math.max(eval5, Math.max(eval2, Math.max(eval3, eval4)))-(Math.max(eval10, Math.max(eval7, Math.max(eval8, eval9)))));
+        
+        
     }
-
-    // Utility functions for calculating line sums - pretty straightforward
-    public float diagSum1(float[][]ratios){return ratios[0][0] + ratios[1][1] + ratios[2][2];}
-    public float diagSumA(float[][]ratios){return -ratios[0][0] - ratios[1][1] - ratios[2][2];} 
-    public float diagSumB(float[][]ratios){return -ratios[0][2] - ratios[1][1] - ratios[2][0];}
-    public float diagSum2(float[][]ratios){return ratios[0][2] + ratios[1][1] + ratios[2][0];}
-    public float rowSum(float[][]ratios, int row){return ratios[row][0] + ratios[row][1] + ratios[row][2];}
-    public float rowSum2(float[][]ratios, int row){return -ratios[row][0] - ratios[row][1] - ratios[row][2];}
-    public float colSum2(float[][]ratios, int col){return -ratios[0][col] - ratios[1][col] - ratios[2][col];}
-    public float colSum(float[][]ratios, int col){return ratios[0][col] + ratios[1][col] + ratios[2][col];}
+    // player X and player O evals
+    public float diagSum1(float[][]evals){return evals[0][0] + evals[1][1] + evals[2][2];}
+    public float diagSumA(float[][]evals){return -evals[0][0] - evals[1][1] - evals[2][2];} 
+    public float diagSumB(float[][]evals){return -evals[0][2] - evals[1][1] - evals[2][0];}
+    public float diagSum2(float[][]evals){return evals[0][2] + evals[1][1] + evals[2][0];}
+    public float rowSum(float[][]evals, int row){return evals[row][0] + evals[row][1] + evals[row][2];}
+    public float rowSum2(float[][]evals, int row){return -evals[row][0] - evals[row][1] - evals[row][2];}
+    public float colSum2(float[][]evals, int col){return -evals[0][col] - evals[1][col] - evals[2][col];}
+    public float colSum(float[][]evals, int col){return evals[0][col] + evals[1][col] + evals[2][col];}
+    
 
     // Main minimax with parallel processing - this is where the magic happens
     public float parallelMiniMax(BigBoard board, int depth, boolean isMaximizing, int originalDepth, 
@@ -94,7 +94,7 @@ public class ParallelMiniMax {
         if (board.getWinner() == 'X') return -Float.MAX_VALUE;
         if (board.getWinner() == 'O') return Float.MAX_VALUE;
         if (depth == 0 || legalMoves.size() == 0) {
-            return finalRatio(eval(board, map));
+            return finalEval(eval(board, map));
         }
 
         // Only use parallel processing for shallow depths to avoid thread overhead
@@ -360,7 +360,7 @@ public class ParallelMiniMax {
             if (board.getWinner() == 'X') return new MoveResult(new int[]{-1,-1,-1,-1}, -Float.MAX_VALUE);
             if (board.getWinner() == 'O') return new MoveResult(new int[]{-1,-1,-1,-1}, Float.MAX_VALUE);
             if (depth == 0 || legalMoves.size() == 0) {
-                return new MoveResult(new int[]{-1,-1,-1,-1}, finalRatio(eval(board, map)));
+                return new MoveResult(new int[]{-1,-1,-1,-1}, finalEval(eval(board, map)));
             }
             
             // Only parallelize shallow levels
