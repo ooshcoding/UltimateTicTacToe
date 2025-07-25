@@ -9,7 +9,8 @@ public class Main {
     private static int depth = 7;
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        
+        String simulation_file_name = "NO_ABP_TIME_DEPTH";
+
         System.out.println("=== Ultimate Tic Tac Toe ===");
         System.out.println("1. Play Game");
         System.out.println("2. Run AI Performance Test");
@@ -41,8 +42,9 @@ public class Main {
         char currentPlayer = 'X';
         MiniMax minimax = new MiniMax();
         TranspositionTable tt = new TranspositionTable();
-        tt.sbPossibilities(); //ALREADY RUN
-        tt.OutputCountsAsCSV(tt.getTable(), "smallBoard_transpositionTable.csv"); //JUST LOAD IN ON NEXT LINE
+        tt.sbPossibilities(); 
+        tt.outputTableAsJsObject(
+            tt.getTable(), "website_transpositionTable.js"); //JUST LOAD IN ON NEXT LINE
         tt.loadFromCSV("/Users/ryanding/VSCode/UltimateTicTacToe/smallBoard_transpositionTable.csv");
         int minimax_win = 0;
         int random_win = 0;
@@ -51,12 +53,6 @@ public class Main {
                 int br = board.getNextBoardRow();
                 int bc = board.getNextBoardCol();
                 
-                /*if (br == -1 || bc == -1) {
-                    System.out.println("You can start ANYWHERE on the board.");
-                } else {
-                    System.out.println("You must play in board (" + br + ", " + bc + ")");
-                }*/
-    
                 if (currentPlayer == 'X') {
                     boolean valid = false;
                     while (!valid){
@@ -157,19 +153,12 @@ public class Main {
         
         MiniMax minimax = new MiniMax();
         
-        //System.out.println(minimax.miniMax(board, 5, 0, false, -99999, 99999));
         while (!board.isGameOver()) {
             System.out.println("Current Player: " + currentPlayer);
             board.display();
 
             int br = board.getNextBoardRow();
             int bc = board.getNextBoardCol();
-
-            /*if (br == -1 || bc == -1) {
-                System.out.println("You can start ANYWHERE on the board.");
-            } else {
-                System.out.println("You must play in board (" + br + ", " + bc + ")");
-            }*/
 
             if (currentPlayer == 'X') {
                 boolean valid = false;
@@ -198,7 +187,7 @@ public class Main {
                 }
             } else {
                 if (count < 7){
-                    depth = 9;
+                    depth = 9; //depth increases as the game goes on
                 }
                 else if (count < 27){
                     depth = 10;
@@ -272,9 +261,8 @@ public class Main {
     // Generate 30 specific game states for testing
 public static ArrayList<int[][]> generateTestGameStates() {
     ArrayList<int[][]> gameStates = new ArrayList<>();
-    Random rand = new Random(12345); // Fixed seed for reproducibility
+    Random rand = new Random(12345); 
     
-    // Predefined game states to ensure variety
     int[][][] predefinedStates = {
         // State 1: Center start
         {{1, 1, 1, 1}, {1, 1, 0, 0}, {0, 0, 2, 2}},
@@ -346,7 +334,7 @@ public static ArrayList<int[][]> generateTestGameStates() {
 }
 
     // Run the performance test with the generated states
-public static void runPerformanceTest() {
+public static void runPerformanceTest(String simulation_file_name) {
 
     System.out.println("=== AI Performance Testing Framework ===");
     System.out.println("Generating 30 game states...");
@@ -360,7 +348,7 @@ public static void runPerformanceTest() {
     MiniMax minimax = new MiniMax();
     
     // Prepare CSV file
-    try (FileWriter csvWriter = new FileWriter("NO_ABP_TIME_DEPTH" + depth + ".csv")) {
+    try (FileWriter csvWriter = new FileWriter(simulation_file_name + depth + ".csv")) {
         csvWriter.write("Depth,Simulation Run,Time,Board Number\n");
         
         System.out.println("Starting performance testing...");

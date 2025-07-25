@@ -4,11 +4,9 @@ public class SmallBoard {
     private char[][] grid = new char[3][3];
     private char winner = ' ';
     private boolean full = false;
-   // private int filledCells;
     public SmallBoard() {
         for (char[] row : grid)
             Arrays.fill(row, ' ');
-        //filledCells = 0;
     }
 
     public String toString() {
@@ -26,7 +24,6 @@ public class SmallBoard {
         }
         winner = ' ';
         full = false;
-        //filledCells = 0;
     }
     public int toInt() {
         int result = 0;
@@ -44,29 +41,24 @@ public class SmallBoard {
         Float ret = 0f;
         Sb.checkWinner();
         if (Sb.isEmpty()){
-            //Random rand = new Random();
-            ret = 0f;//rand.nextFloat(); 
-             //neutral position, but change to match halfway of top and bottom x ratio
+            ret = 0f;
         }
         else if (Sb.getWinner() == 'X'){ 
-            //if board is already WON
             ret = (float) -9;
-            //board.display();
         } else if (Sb.getWinner() == 'O'){
             ret = (float) 9;
-            //board.display();
         }
-        else if (Sb.isPlayable() == false && Sb.getWinner() == ' '){ // board is tied.
-            ret = (float) -6; //if the board is full and no winner, neutral position
+        else if (Sb.isPlayable() == false && Sb.getWinner() == ' '){ 
+            ret = (float) -6;
         }
 
-        for (int c = 0; c < 3; c++){ //ALL THIS IS FIRST COLUMN
-            if (grid[0][c] != ' '){ //grid row c, col 0
-                if (colWin(grid[0][c], c, grid)!= ' '){ //if column has possible win
-                    if (colWin(grid[0][c], c, grid) == 'X'){ // if the column has possible win for X
+        for (int c = 0; c < 3; c++){ 
+            if (grid[0][c] != ' '){ 
+                if (colWin(grid[0][c], c, grid)!= ' '){ 
+                    if (colWin(grid[0][c], c, grid) == 'X'){
                         x_wins++;
                         } 
-                    else if (colWin(grid[0][c], c, grid) == 'O'){ // if column has possible win for O
+                    else if (colWin(grid[0][c], c, grid) == 'O'){ 
                         o_wins++;
                     }
                 }     
@@ -77,11 +69,11 @@ public class SmallBoard {
         
         for (int c = 0; c < 3; c++){
             if (grid[1][c] != ' '){
-                if (colWin(grid[1][c], c, grid)!= ' '){ //if column has possible win
-                    if (colWin(grid[1][c], c, grid) == 'X'){ // if the column has possible win for X
+                if (colWin(grid[1][c], c, grid)!= ' '){ 
+                    if (colWin(grid[1][c], c, grid) == 'X'){ 
                         x_wins++;
                         } 
-                    else if (colWin(grid[1][c], c, grid) == 'O'){ // if column has possible win for O
+                    else if (colWin(grid[1][c], c, grid) == 'O'){ 
                         o_wins++;
                     }
                 }     
@@ -91,17 +83,17 @@ public class SmallBoard {
         
         for (int c = 0; c < 3; c++){
             if (grid[2][c] != ' '){
-                if (colWin(grid[2][c], c, grid)!= ' '){ //if column has possible win
-                    if (colWin(grid[2][c], c, grid) == 'X'){ // if the column has possible win for X
+                if (colWin(grid[2][c], c, grid)!= ' '){ 
+                    if (colWin(grid[2][c], c, grid) == 'X'){ 
                         x_wins++;
                         } 
-                    else if (colWin(grid[2][c], c, grid) == 'O'){ // if column has possible win for O
+                    else if (colWin(grid[2][c], c, grid) == 'O'){
                         o_wins++;
                     }
                 }     
             }
             
-        } // check for third column
+        } 
          
         for (int r = 0; r < 3; r++) {
             if (grid[r][0] != ' '){ 

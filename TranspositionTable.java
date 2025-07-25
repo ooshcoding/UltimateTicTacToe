@@ -2,18 +2,20 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Iterator;
 
 public class TranspositionTable {
-    private ConcurrentHashMap<Integer, Float> table;
+    private HashMap<Integer, Float> table;
 
     public TranspositionTable(){
-        table = new java.util.concurrent.ConcurrentHashMap<>();
+        table = new java.util.HashMap<>();
     }
 
-    public ConcurrentHashMap <Integer, Float> getTable() {
+    public HashMap <Integer, Float> getTable() {
         return table;
     }
     public void store(Integer key, Float value) {
@@ -197,7 +199,46 @@ public char[][] ifF(int a, int b, int c, int d, int e, int f, char[][]grid){
         }
     }
 
-    public void OutputCountsAsCSV(ConcurrentHashMap<Integer, Float> table, String filename) {
+public void outputTableAsJsObject(HashMap<Integer, Float> table, String filename) {
+    // Ensure the filename ends with .js
+    if (!filename.endsWith(".js")) {
+        filename += ".js";
+    }
+
+    try (FileWriter writer = new FileWriter(filename)) {
+        // Start the JavaScript object declaration
+        writer.write("const transpositionTable = {\n");
+
+        // Use an iterator to handle the trailing comma gracefully
+        Iterator<Map.Entry<Integer, Float>> iterator = table.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, Float> entry = iterator.next();
+            
+            // Format the line as "key": value
+            // Using quotes around the key is good practice in JS
+            String rowText = String.format("  \"%s\": %f", entry.getKey(), entry.getValue());
+            writer.write(rowText);
+
+            // Add a comma if this is not the last entry
+            if (iterator.hasNext()) {
+                writer.write(",\n");
+            } else {
+                writer.write("\n"); // No comma for the last entry
+            }
+        }
+
+        // Close the JavaScript object
+        writer.write("};\n");
+
+        System.out.println("JavaScript object file saved successfully to: " + filename);
+
+    } catch (IOException e) {
+        System.out.println("Saving JavaScript file failed...");
+        e.printStackTrace();
+    }
+}
+
+    public void OutputCountsAsCSV(HashMap<Integer, Float> table, String filename) {
             
     try (FileWriter writer = new FileWriter(filename)) {
         for (ConcurrentHashMap.Entry<Integer, Float> entry : table.entrySet()) {
